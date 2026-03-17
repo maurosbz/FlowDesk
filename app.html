@@ -1934,7 +1934,9 @@ function openGenerateModal(){
 
 function closeModal(id){ document.getElementById(id).classList.remove('open') }
 
-function startGeneration(){
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function startGeneration(){
   const calories = parseInt(document.getElementById('gen-calories').value)||2000;
   const budget = parseFloat(document.getElementById('gen-budget').value)||7;
   const supermarket = document.getElementById('gen-supermarket').value;
@@ -1949,41 +1951,136 @@ function startGeneration(){
   closeModal('modal-generate');
   document.getElementById('modal-generating').classList.add('open');
   const steps = ['gstep-1','gstep-2','gstep-3','gstep-4','gstep-5'];
-  let current = 0;
 
-  function nextStep(){
-    if(current>0) {
-      document.getElementById(steps[current-1]).classList.remove('active');
-      document.getElementById(steps[current-1]).classList.add('done');
-      document.getElementById(steps[current-1]).querySelector('.gen-step-icon').textContent='✓';
+  function activateStep(n){
+    if(n>0){
+      const prev = document.getElementById(steps[n-1]);
+      prev.classList.remove('active'); prev.classList.add('done');
+      prev.querySelector('.gen-step-icon').textContent='✓';
     }
-    if(current<steps.length){
-      document.getElementById(steps[current]).classList.remove('pending');
-      document.getElementById(steps[current]).classList.add('active');
-      current++;
-      setTimeout(nextStep, 600);
-    } else {
-      // Generate and save
-      const plan = generatePlan({ targetCalories:calories, proteinPct, carbsPct, fatPct, dailyBudget:budget, preferredSupermarket:supermarket, allergies:p.allergies||[], mealCount:selectedMealCount });
-      savePlan(plan);
-      setTimeout(()=>{
-        closeModal('modal-generating');
-        // Reset step states
-        steps.forEach(id=>{
-          const el=document.getElementById(id);
-          el.classList.remove('active','done');
-          el.classList.add('pending');
-          el.querySelector('.gen-step-icon').textContent=el.dataset.icon||'';
-        });
-        current=0;
-        document.getElementById('gstep-1').classList.remove('pending');
-        document.getElementById('gstep-1').classList.add('active');
-        toast('Plan generado correctamente');
-        showView('plan');
-      }, 400);
+    if(n<steps.length){
+      const cur = document.getElementById(steps[n]);
+      cur.classList.remove('pending'); cur.classList.add('active');
     }
   }
-  nextStep();
+
+  function resetSteps(){
+    steps.forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.remove('active','done'); el.classList.add('pending');
+      el.querySelector('.gen-step-icon').textContent=el.dataset.icon||'';
+    });
+    document.getElementById('gstep-1').classList.remove('pending');
+    document.getElementById('gstep-1').classList.add('active');
+  }
+
+  activateStep(0); await sleep(500);
+  activateStep(1); await sleep(500);
+  activateStep(2);
+
+  const opts = { targetCalories:calories, proteinPct, carbsPct, fatPct, dailyBudget:budget, preferredSupermarket:supermarket, allergies:p.allergies||[], mealCount:selectedMealCount };
+
+  let plan;
+  try {
+    plan = await generatePlanWithAI(opts);
+  } catch(e) {
+    console.warn('AI generation failed, using local fallback:', e);
+    plan = generatePlan(opts);
+  }
+
+  activateStep(3); await sleep(400);
+  activateStep(4); await sleep(400);
+
+  savePlan(plan);
+  setTimeout(()=>{
+    closeModal('modal-generating');
+    resetSteps();
+    toast('Plan generado correctamente');
+    showView('plan');
+  }, 400);
+}
+
+async function generatePlanWithAI(opts){
+  const { targetCalories, proteinPct, carbsPct, fatPct, dailyBudget, preferredSupermarket, allergies, mealCount } = opts;
+  const protG = Math.round(targetCalories * proteinPct/100 / 4);
+  const carbG = Math.round(targetCalories * carbsPct/100 / 4);
+  const fatG  = Math.round(targetCalories * fatPct/100 / 9);
+
+  // Filter available foods
+  let foods = FOODS_DB.filter(f => {
+    if(preferredSupermarket !== 'any' && f.supermarket !== preferredSupermarket) return false;
+    if((allergies||[]).some(a => f.allergens.includes(a))) return false;
+    return true;
+  });
+  if(foods.length < 10) foods = FOODS_DB.filter(f => !(allergies||[]).some(a => f.allergens.includes(a)));
+
+  const cfg = MEAL_CONFIGS[mealCount] || MEAL_CONFIGS[4];
+  const slots = cfg.slots;
+  const pcts  = cfg.pcts;
+
+  const foodLines = foods.map(f =>
+    `${f.id}|${f.name}|${f.category}|${f.cal}kcal|P${f.pro}g C${f.carb}g G${f.fat}g|${f.pricePerKg}€/kg`
+  ).join('\n');
+
+  const mealDesc = slots.map(s => `${s}:~${Math.round(targetCalories*pcts[s])}kcal`).join(', ');
+
+  const prompt = `Genera un plan de dieta de 7 días en JSON. Responde ÚNICAMENTE con el JSON, sin explicación ni markdown.
+
+OBJETIVO: ${targetCalories}kcal/día | P:${protG}g C:${carbG}g G:${fatG}g | ${dailyBudget}€/día
+TOMAS: ${mealDesc}
+ALERGIAS A EVITAR: ${allergies.length ? allergies.join(', ') : 'ninguna'}
+
+ALIMENTOS DISPONIBLES (id|nombre|categoría|kcal/100g|macros|precio):
+${foodLines}
+
+REGLAS:
+- Usa SOLO los IDs anteriores. IDs inválidos rompen la app.
+- Desayuno: avena/pan/cereales + lácteo + fruta. NUNCA arroz, pasta, carne en desayuno.
+- Comida: proteína + carbohidrato + verdura(s) + grasa
+- Cena: proteína + verdura(s) + grasa (sin carbohidratos pesados)
+- Merienda/almuerzo: fruta o lácteo
+- Varía los alimentos: no repitas la misma proteína más de 2 días seguidos
+- Ajusta gramos para alcanzar las kcal de cada toma. Rangos: proteína 100-250g, carbo cocido 150-300g, verdura 100-250g, aceite 10-20g, frutos secos 20-30g, lácteo 100-300g, fruta 100-200g
+- El coste diario no debe superar ${dailyBudget}€
+
+FORMATO (devuelve exactamente esto, sin nada más):
+{"days":[{"dayName":"Lunes","meals":{"${slots[0]}":[{"foodId":"ID","grams":100}]${slots.length>1?`,"${slots[1]}":[{"foodId":"ID","grams":100}]`:''}}},...hasta Domingo]}`;
+
+  const res = await fetch(PROXY_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4096,
+      messages: [{ role:'user', content: prompt }]
+    })
+  });
+
+  if(!res.ok) throw new Error('API error ' + res.status);
+  const data = await res.json();
+  let text = data.content?.[0]?.text || '';
+
+  // Strip markdown code blocks if present
+  text = text.replace(/^```(?:json)?\s*/,'').replace(/\s*```$/,'').trim();
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if(!jsonMatch) throw new Error('No JSON in response');
+
+  const parsed = JSON.parse(jsonMatch[0]);
+  if(!parsed.days || parsed.days.length < 7) throw new Error('Invalid plan');
+
+  // Remove any invalid food IDs
+  parsed.days.forEach(day => {
+    Object.keys(day.meals).forEach(meal => {
+      day.meals[meal] = (day.meals[meal]||[]).filter(item => !!FOOD_MAP[item.foodId]);
+    });
+  });
+
+  return {
+    id: 'plan_'+Date.now(), createdAt: new Date().toISOString(),
+    targetCalories, proteinPct, carbsPct, fatPct,
+    dailyBudget, preferredSupermarket, mealCount: mealCount||4,
+    days: parsed.days
+  };
 }
 
 function generatePlan(opts){
