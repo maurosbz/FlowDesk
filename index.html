@@ -96,7 +96,6 @@
     [data-theme="light"] .mock-card { background: rgba(0,0,0,.03); border-color: rgba(0,0,0,.06); }
     [data-theme="light"] .mock-bar-track { background: rgba(0,0,0,.06); }
     [data-theme="light"] .mock-task { border-color: rgba(0,0,0,.05); color: #555; }
-    [data-theme="light"] .chat-panel { background: #fff; border-color: rgba(0,0,0,.1); }
     [data-theme="light"] .bt-dot { background: #222; box-shadow: 0 0 20px 10px rgba(0,0,0,.3), 0 0 60px 20px rgba(0,0,0,.15); }
 
     /* ══════════════════════════════════
@@ -840,88 +839,6 @@
     .social-link:hover { background: rgba(200,200,200,.3); color: #fff; }
 
     /* ══════════════════════════════════
-       CHAT WIDGET
-    ══════════════════════════════════ */
-    .chat-widget {
-      position: fixed; bottom: 24px; right: 24px;
-      z-index: 8000;
-    }
-    .chat-btn {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: var(--grad);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; border: none; font-size: 1.3rem;
-      box-shadow: 0 4px 20px rgba(255,255,255,.15);
-      transition: transform .2s, box-shadow .2s;
-    }
-    .chat-btn:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(255,255,255,.2); }
-    .chat-badge {
-      position: absolute; top: -3px; right: -3px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #aaaaaa; color: #fff;
-      font-size: .6rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid var(--dark);
-    }
-    .chat-panel {
-      position: absolute; bottom: 64px; right: 0;
-      width: 300px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 16px 48px rgba(0,0,0,.4);
-      transform: scale(.9) translateY(10px);
-      transform-origin: bottom right;
-      opacity: 0; pointer-events: none;
-      transition: opacity .25s, transform .25s;
-    }
-    .chat-panel.open { opacity: 1; pointer-events: all; transform: scale(1) translateY(0); }
-    .chat-panel-header {
-      background: var(--grad); padding: 14px 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .chat-panel-header .avatar { width: 32px; height: 32px; font-size: .7rem; }
-    .chat-panel-header-text { flex: 1; }
-    .chat-panel-header-name { font-size: .85rem; font-weight: 700; color: #fff; }
-    .chat-panel-header-status { font-size: .72rem; color: rgba(255,255,255,.8); }
-    .chat-close-btn {
-      background: none; border: none; color: rgba(255,255,255,.7);
-      cursor: pointer; font-size: 1rem; transition: color .2s;
-    }
-    .chat-close-btn:hover { color: #fff; }
-    .chat-messages { padding: 16px; min-height: 120px; }
-    .chat-msg {
-      background: rgba(200,200,200,.12);
-      border-radius: 0 10px 10px 10px;
-      padding: 10px 12px; font-size: .82rem;
-      color: var(--text); margin-bottom: 10px;
-      max-width: 85%; line-height: 1.5;
-    }
-    .chat-msg-time { font-size: .68rem; color: var(--muted); margin-top: 4px; }
-    .chat-input-row {
-      display: flex; gap: 8px; padding: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .chat-input {
-      flex: 1; background: var(--input-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px; padding: 9px 12px;
-      font-size: .82rem; color: var(--text);
-      font-family: inherit; outline: none;
-      transition: border-color .2s;
-    }
-    .chat-input:focus { border-color: var(--primary); }
-    .chat-send {
-      width: 34px; height: 34px; border-radius: 8px;
-      background: var(--text); border: none;
-      color: var(--dark); cursor: pointer; font-size: .9rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .2s;
-    }
-    .chat-send:hover { background: var(--secondary); }
-
-    /* ══════════════════════════════════
        BORDER TRAIL
        Port de border-trail.tsx
        Usa CSS offset-path (Motion Path API)
@@ -1013,9 +930,6 @@
       .hero h1 { font-size: clamp(1.8rem, 8vw, 2.4rem); }
       .hero-stats { flex-direction: column; gap: 16px; }
       .footer-grid { grid-template-columns: 1fr; }
-      .chat-panel { width: 260px; }
-      /* Marco: chat no tapa el CTA en mobile */
-      .chat-widget { bottom: 80px; right: 16px; }
     }
   </style>
 </head>
@@ -1504,34 +1418,6 @@
   </div>
 </footer>
 
-<!-- ══ CHAT WIDGET ═══════════════════════════════════════ -->
-<div class="chat-widget">
-  <div class="chat-panel" id="chat-panel">
-    <div class="chat-panel-header">
-      <div class="avatar chat-panel-header-avatar" style="width:32px;height:32px;font-size:.7rem">FD</div>
-      <div class="chat-panel-header-text">
-        <div class="chat-panel-header-name">Soporte FlowDesk</div>
-        <div class="chat-panel-header-status">En línea · Responde en minutos</div>
-      </div>
-      <button class="chat-close-btn" onclick="closeChat()" aria-label="Cerrar chat">✕</button>
-    </div>
-    <div class="chat-messages">
-      <div class="chat-msg">
-        ¡Hola! Soy el asistente de FlowDesk. ¿Tienes alguna pregunta sobre planes, funcionalidades o migraciones?
-        <div class="chat-msg-time">Ahora</div>
-      </div>
-    </div>
-    <div class="chat-input-row">
-      <input class="chat-input" type="text" placeholder="Escribe tu mensaje..." id="chat-input-field" />
-      <button class="chat-send" onclick="sendChatMsg()" aria-label="Enviar">➤</button>
-    </div>
-  </div>
-  <button class="chat-btn" onclick="toggleChat()" aria-label="Abrir chat de soporte">
-    💬
-    <span class="chat-badge" id="chat-badge">1</span>
-  </button>
-</div>
-
 <script>
   /* ══════════════════════════════════
      1. DARK / LIGHT MODE
@@ -1656,52 +1542,7 @@
   }
 
   /* ══════════════════════════════════
-     7. CHAT WIDGET
-  ══════════════════════════════════ */
-  const chatPanel = document.getElementById('chat-panel');
-  const chatBadge = document.getElementById('chat-badge');
-  const chatReplies = [
-    'Claro, te ayudo con eso. ¿Puedes contarme más detalles?',
-    'El plan Pro incluye IA Copiloto y métricas avanzadas. ¿Te gustaría ver una demo?',
-    'La migración desde Jira tarda menos de 5 minutos. ¿Quieres que te guíe?',
-    '¡Excelente pregunta! Nuestro equipo de ventas puede preparar una propuesta personalizada.',
-  ];
-  let replyIndex = 0;
-
-  function toggleChat() {
-    chatPanel.classList.toggle('open');
-    chatBadge.style.display = 'none';
-  }
-  function closeChat() { chatPanel.classList.remove('open'); }
-
-  function sendChatMsg() {
-    const input = document.getElementById('chat-input-field');
-    const text = input.value.trim();
-    if (!text) return;
-    const msgs = chatPanel.querySelector('.chat-messages');
-    // User message
-    const userMsg = document.createElement('div');
-    userMsg.style.cssText = 'background:var(--grad);border-radius:10px 10px 0 10px;padding:10px 12px;font-size:.82px;color:#fff;margin-bottom:10px;max-width:85%;margin-left:auto;font-size:.82rem';
-    userMsg.textContent = text;
-    msgs.appendChild(userMsg);
-    input.value = '';
-    msgs.scrollTop = msgs.scrollHeight;
-    // Bot reply after delay
-    setTimeout(() => {
-      const reply = document.createElement('div');
-      reply.className = 'chat-msg';
-      reply.textContent = chatReplies[replyIndex % chatReplies.length];
-      replyIndex++;
-      msgs.appendChild(reply);
-      msgs.scrollTop = msgs.scrollHeight;
-    }, 800);
-  }
-  document.getElementById('chat-input-field').addEventListener('keydown', e => {
-    if (e.key === 'Enter') sendChatMsg();
-  });
-
-  /* ══════════════════════════════════
-     8. FAQ ACCORDION
+     7. FAQ ACCORDION
   ══════════════════════════════════ */
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
