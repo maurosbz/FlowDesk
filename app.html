@@ -388,6 +388,13 @@
 
     /* Plan cards */
     .plan-cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+    .meal-count-btn {
+      flex:1; padding:10px 8px; border-radius:9px; font-size:.88rem; font-weight:700;
+      background:var(--surface2); border:1px solid var(--border-md); color:var(--muted);
+      cursor:pointer; transition:all .15s; font-family:inherit;
+    }
+    .meal-count-btn.active { background:var(--text); color:var(--bg); border-color:var(--text) }
+    .meal-count-btn:hover:not(.active) { color:var(--text); border-color:rgba(255,255,255,.2) }
     .plan-sub-card {
       background:var(--surface2); border:1px solid var(--border-md);
       border-radius:12px; padding:18px; cursor:pointer; transition:border-color .2s;
@@ -644,33 +651,104 @@
         </div>
       </div>
 
+      <!-- TDEE CALCULATOR -->
       <div class="settings-section">
-        <div class="settings-header">Objetivo</div>
-        <div class="goal-options" id="goal-options">
+        <div class="settings-header">Tu metabolismo basal (TDEE)</div>
+        <div class="settings-row">
+          <div><div class="settings-label">Peso</div><div class="settings-sub">en kilogramos</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" class="settings-input" id="s-weight" value="75" min="30" max="300" style="width:80px" oninput="recalcTDEE()"/>
+            <span style="font-size:.78rem;color:var(--muted)">kg</span>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Altura</div><div class="settings-sub">en centímetros</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" class="settings-input" id="s-height" value="175" min="100" max="250" style="width:80px" oninput="recalcTDEE()"/>
+            <span style="font-size:.78rem;color:var(--muted)">cm</span>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Edad</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" class="settings-input" id="s-age" value="30" min="15" max="100" style="width:80px" oninput="recalcTDEE()"/>
+            <span style="font-size:.78rem;color:var(--muted)">años</span>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Sexo biológico</div></div>
+          <select class="settings-select" id="s-gender" onchange="recalcTDEE()">
+            <option value="male">Hombre</option>
+            <option value="female">Mujer</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Actividad física</div></div>
+          <select class="settings-select" id="s-activity" onchange="recalcTDEE()" style="max-width:220px;font-size:.78rem">
+            <option value="1.2">Sedentario (sin ejercicio)</option>
+            <option value="1.375">Ligero (1–3 días/semana)</option>
+            <option value="1.55" selected>Moderado (3–5 días/semana)</option>
+            <option value="1.725">Activo (6–7 días/semana)</option>
+            <option value="1.9">Muy activo (trabajo físico + entreno)</option>
+          </select>
+        </div>
+        <div class="settings-row" style="background:var(--surface2)">
+          <div>
+            <div class="settings-label">TDEE calculado</div>
+            <div class="settings-sub">Calorías de mantenimiento estimadas</div>
+          </div>
+          <div style="font-size:1.4rem;font-weight:300;letter-spacing:-.03em;color:var(--kcal)" id="tdee-display">— kcal</div>
+        </div>
+      </div>
+
+      <!-- OBJETIVO -->
+      <div class="settings-section">
+        <div class="settings-header">Objetivo y calorías recomendadas</div>
+        <div class="goal-options" id="goal-options" style="flex-wrap:wrap">
+          <button class="goal-option" data-goal="cut_hard" onclick="setGoal('cut_hard')">
+            <div class="goal-option-icon">🔥</div>
+            <div class="goal-option-label">Definición fuerte</div>
+            <div class="goal-option-desc">−25% del TDEE</div>
+          </button>
+          <button class="goal-option" data-goal="cut" onclick="setGoal('cut')">
+            <div class="goal-option-icon">📉</div>
+            <div class="goal-option-label">Definición</div>
+            <div class="goal-option-desc">−15% del TDEE</div>
+          </button>
           <button class="goal-option active" data-goal="maintain" onclick="setGoal('maintain')">
             <div class="goal-option-icon">⚖️</div>
             <div class="goal-option-label">Mantenimiento</div>
-            <div class="goal-option-desc">Mantener el peso actual</div>
-          </button>
-          <button class="goal-option" data-goal="cut" onclick="setGoal('cut')">
-            <div class="goal-option-icon">🔥</div>
-            <div class="goal-option-label">Pérdida de grasa</div>
-            <div class="goal-option-desc">Déficit calórico</div>
+            <div class="goal-option-desc">TDEE sin ajuste</div>
           </button>
           <button class="goal-option" data-goal="bulk" onclick="setGoal('bulk')">
-            <div class="goal-option-icon">💪</div>
-            <div class="goal-option-label">Ganancia muscular</div>
-            <div class="goal-option-desc">Superávit calórico</div>
+            <div class="goal-option-icon">📈</div>
+            <div class="goal-option-label">Volumen</div>
+            <div class="goal-option-desc">+10% del TDEE</div>
           </button>
+          <button class="goal-option" data-goal="bulk_hard" onclick="setGoal('bulk_hard')">
+            <div class="goal-option-icon">💪</div>
+            <div class="goal-option-label">Superávit fuerte</div>
+            <div class="goal-option-desc">+20% del TDEE</div>
+          </button>
+        </div>
+        <div class="settings-row" style="background:var(--surface2);flex-wrap:wrap;gap:12px">
+          <div>
+            <div class="settings-label">Calorías recomendadas</div>
+            <div class="settings-sub" id="goal-recommendation-sub">Basadas en tu TDEE y objetivo</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:1.3rem;font-weight:300;letter-spacing:-.03em;color:var(--protein)" id="goal-calories-display">— kcal</span>
+            <button class="btn btn-ghost btn-sm" onclick="applyRecommendedCalories()">Aplicar</button>
+          </div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-header">Macros y calorías</div>
+        <div class="settings-header">Macros y calorías objetivo</div>
         <div class="settings-row">
           <div>
             <div class="settings-label">Calorías diarias</div>
-            <div class="settings-sub">Objetivo calórico diario</div>
+            <div class="settings-sub">Puedes ajustarlo manualmente o usar la recomendación</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <input type="number" class="settings-input" id="s-calories" value="2000" min="1000" max="5000" style="width:90px" oninput="saveProfile()"/>
@@ -807,6 +885,16 @@
           <option value="lowcarb">Bajo en carbos (35% P · 25% C · 40% G)</option>
           <option value="custom">Personalizado (desde Ajustes)</option>
         </select>
+      </div>
+      <div class="field">
+        <label>Número de comidas al día</label>
+        <div style="display:flex;gap:8px;margin-bottom:8px" id="meal-count-btns">
+          <button type="button" class="meal-count-btn" data-meals="2" onclick="selectMealCount(2)">2</button>
+          <button type="button" class="meal-count-btn" data-meals="3" onclick="selectMealCount(3)">3</button>
+          <button type="button" class="meal-count-btn active" data-meals="4" onclick="selectMealCount(4)">4</button>
+          <button type="button" class="meal-count-btn" data-meals="5" onclick="selectMealCount(5)">5</button>
+        </div>
+        <div id="meal-count-desc" style="font-size:.76rem;color:var(--muted)">Desayuno · Comida · Merienda · Cena</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -974,10 +1062,24 @@ const MEAL_ORDER = ['desayuno','almuerzo','comida','merienda','cena'];
 const MEAL_PCT = { desayuno:.22, almuerzo:.10, comida:.35, merienda:.10, cena:.23 };
 const DAYS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
+// Configuraciones de comidas por número de ingestas
+const MEAL_CONFIGS = {
+  2: { slots:['comida','cena'],              pcts:{ comida:.55, cena:.45 } },
+  3: { slots:['desayuno','comida','cena'],   pcts:{ desayuno:.25, comida:.45, cena:.30 } },
+  4: { slots:['desayuno','comida','merienda','cena'], pcts:{ desayuno:.25, comida:.40, merienda:.10, cena:.25 } },
+  5: { slots:['desayuno','almuerzo','comida','merienda','cena'], pcts:{ desayuno:.22, almuerzo:.10, comida:.35, merienda:.10, cena:.23 } },
+};
+const MEAL_CONFIG_LABELS = {
+  2:'Comida · Cena',
+  3:'Desayuno · Comida · Cena',
+  4:'Desayuno · Comida · Merienda · Cena',
+  5:'Desayuno · Media mañana · Comida · Merienda · Cena',
+};
+
 const PLANS_SUB = [
-  {id:'free', name:'Gratis', price:'0€', period:'para siempre', features:['1 plan al mes','Solo Mercadona','Lista de la compra']},
-  {id:'pro',  name:'Pro',   price:'9€', period:'usuario / mes', features:['Planes ilimitados','Todos los supermercados','Historial completo','Ajuste automático']},
-  {id:'premium', name:'Premium', price:'19€', period:'usuario / mes', features:['Todo en Pro','Coach IA conversacional','Recetas personalizadas','Soporte prioritario']},
+  {id:'free', name:'Gratis', price:'0€', period:'para siempre', features:['1 plan simultáneo','2 supermercados (Mercadona + Lidl)','Control de macros básico','Lista de la compra']},
+  {id:'pro',  name:'Pro',   price:'9€', period:'usuario / mes', features:['Planes ilimitados','Todos los supermercados','Macros avanzados','Historial completo','Ajuste automático de objetivos']},
+  {id:'premium', name:'Premium', price:'19€', period:'usuario / mes', features:['Todo en Pro','Coach IA conversacional','Recetas personalizadas','Análisis avanzado','Soporte prioritario']},
 ];
 
 const CAT_LABELS = { protein:'Proteína', carbs:'Carbohidrato', fat:'Grasa', vegetable:'Verdura', fruit:'Fruta', dairy:'Lácteo' };
@@ -1421,10 +1523,21 @@ function syncSettings(){
   const dmToggle = document.getElementById('dark-mode-toggle');
   if(dmToggle) dmToggle.checked = html.getAttribute('data-theme')==='dark';
 
+  // TDEE fields
+  if(p.weight) document.getElementById('s-weight').value = p.weight;
+  if(p.height) document.getElementById('s-height').value = p.height;
+  if(p.age)    document.getElementById('s-age').value    = p.age;
+  if(p.gender) document.getElementById('s-gender').value = p.gender;
+  if(p.activity) document.getElementById('s-activity').value = p.activity;
+  const tdee = calcTDEE();
+  const tdeeEl = document.getElementById('tdee-display');
+  if(tdeeEl) tdeeEl.textContent = `${tdee} kcal`;
+
   // Goal
   document.querySelectorAll('.goal-option').forEach(b=>{
     b.classList.toggle('active', b.dataset.goal===p.goal);
   });
+  updateGoalRecommendation(tdee);
   // Macros
   document.getElementById('s-calories').value = p.targetCalories;
   document.getElementById('s-protein').value = p.proteinPct;
@@ -1443,6 +1556,55 @@ function syncSettings(){
   const planLabel = { free:'Plan Gratis', pro:'Plan Pro', premium:'Plan Premium' };
   document.getElementById('ws-plan-badge').textContent = planLabel[session.plan||'free']||'Plan Gratis';
   document.getElementById('user-plan-badge-footer').textContent = session.plan||'free';
+}
+
+/* ── TDEE Calculator (Mifflin-St Jeor) ── */
+const GOAL_MULTIPLIERS = {
+  cut_hard:.75, cut:.85, maintain:1.0, bulk:1.10, bulk_hard:1.20
+};
+const GOAL_LABELS = {
+  cut_hard:'Definición fuerte (−25%)', cut:'Definición (−15%)',
+  maintain:'Mantenimiento', bulk:'Volumen (+10%)', bulk_hard:'Superávit fuerte (+20%)'
+};
+
+function calcTDEE(){
+  const w = parseFloat(document.getElementById('s-weight')?.value)||75;
+  const h = parseFloat(document.getElementById('s-height')?.value)||175;
+  const a = parseFloat(document.getElementById('s-age')?.value)||30;
+  const g = document.getElementById('s-gender')?.value||'male';
+  const act = parseFloat(document.getElementById('s-activity')?.value)||1.55;
+  // Mifflin-St Jeor
+  const bmr = g==='male'
+    ? 10*w + 6.25*h - 5*a + 5
+    : 10*w + 6.25*h - 5*a - 161;
+  return Math.round(bmr * act);
+}
+
+function recalcTDEE(){
+  const tdee = calcTDEE();
+  const tdeeEl = document.getElementById('tdee-display');
+  if(tdeeEl) tdeeEl.textContent = `${tdee} kcal`;
+  updateGoalRecommendation(tdee);
+  saveProfile();
+}
+
+function updateGoalRecommendation(tdee){
+  const goal = document.querySelector('.goal-option.active')?.dataset.goal || 'maintain';
+  const mult = GOAL_MULTIPLIERS[goal]||1.0;
+  const rec = Math.round(tdee * mult);
+  const calDisplay = document.getElementById('goal-calories-display');
+  const calSub = document.getElementById('goal-recommendation-sub');
+  if(calDisplay) calDisplay.textContent = `${rec} kcal`;
+  if(calSub) calSub.textContent = GOAL_LABELS[goal]||'';
+}
+
+function applyRecommendedCalories(){
+  const tdee = calcTDEE();
+  const goal = document.querySelector('.goal-option.active')?.dataset.goal || 'maintain';
+  const rec = Math.round(tdee * (GOAL_MULTIPLIERS[goal]||1.0));
+  const calInput = document.getElementById('s-calories');
+  if(calInput){ calInput.value = rec; updateMacroPcts(); }
+  toast(`Calorías actualizadas a ${rec} kcal`);
 }
 
 function updateMacroPcts(){
@@ -1470,12 +1632,29 @@ function saveProfile(){
     dailyBudget: parseInt(document.getElementById('s-budget')?.value)||7,
     preferredSupermarket: document.getElementById('s-supermarket')?.value||'any',
     allergies: [...document.querySelectorAll('.allergy-chip.active')].map(c=>c.dataset.allergy),
+    weight: parseFloat(document.getElementById('s-weight')?.value)||75,
+    height: parseFloat(document.getElementById('s-height')?.value)||175,
+    age: parseFloat(document.getElementById('s-age')?.value)||30,
+    gender: document.getElementById('s-gender')?.value||'male',
+    activity: parseFloat(document.getElementById('s-activity')?.value)||1.55,
   };
   saveProfileToSession(p);
 }
 function setGoal(g){
   document.querySelectorAll('.goal-option').forEach(b=>b.classList.toggle('active',b.dataset.goal===g));
+  const tdee = calcTDEE();
+  updateGoalRecommendation(tdee);
   saveProfile();
+}
+
+/* ── Meal count selector ── */
+let selectedMealCount = 4;
+function selectMealCount(n){
+  selectedMealCount = n;
+  document.querySelectorAll('.meal-count-btn').forEach(b=>{
+    b.classList.toggle('active', parseInt(b.dataset.meals)===n);
+  });
+  document.getElementById('meal-count-desc').textContent = MEAL_CONFIG_LABELS[n]||'';
 }
 function toggleAllergy(chip){
   chip.classList.toggle('active');
@@ -1575,7 +1754,7 @@ function startGeneration(){
       setTimeout(nextStep, 600);
     } else {
       // Generate and save
-      const plan = generatePlan({ targetCalories:calories, proteinPct, carbsPct, fatPct, dailyBudget:budget, preferredSupermarket:supermarket, allergies:p.allergies||[] });
+      const plan = generatePlan({ targetCalories:calories, proteinPct, carbsPct, fatPct, dailyBudget:budget, preferredSupermarket:supermarket, allergies:p.allergies||[], mealCount:selectedMealCount });
       savePlan(plan);
       setTimeout(()=>{
         closeModal('modal-generating');
@@ -1598,7 +1777,9 @@ function startGeneration(){
 }
 
 function generatePlan(opts){
-  const { targetCalories, proteinPct, carbsPct, fatPct, dailyBudget, preferredSupermarket, allergies } = opts;
+  const { targetCalories, proteinPct, carbsPct, fatPct, dailyBudget, preferredSupermarket, allergies, mealCount } = opts;
+  const cfg = MEAL_CONFIGS[mealCount] || MEAL_CONFIGS[4];
+
   // Filter available foods
   let pool = FOODS_DB.filter(f=>{
     if(preferredSupermarket!=='any' && f.supermarket!==preferredSupermarket) return false;
@@ -1622,57 +1803,65 @@ function generatePlan(opts){
   const planDays = DAYS.map((dayName, i)=>{
     const meals = {};
 
-    // DESAYUNO (22% of kcal): carb-grain + dairy + fruit
-    const bfGrain = pick(carbsList.filter(f=>['f09','f10','f30','f62'].includes(f.id)).concat(carbsList), i);
-    const bfDairy = pick(dairyList, i);
-    const bfFruit = pick(fruitList, i);
-    meals.desayuno = [];
-    if(bfGrain){ const g=Math.max(40,Math.min(100,Math.round(targetCalories*.22*.40/(bfGrain.cal/100)))); meals.desayuno.push({foodId:bfGrain.id,grams:g}) }
-    if(bfDairy){ const g=Math.max(100,Math.min(250,Math.round(targetCalories*.22*.45/(bfDairy.cal/100)))); meals.desayuno.push({foodId:bfDairy.id,grams:g}) }
-    if(bfFruit) meals.desayuno.push({foodId:bfFruit.id,grams:150});
+    if(cfg.slots.includes('desayuno')){
+      const pct = cfg.pcts.desayuno;
+      const bfGrain = pick(carbsList.filter(f=>['f09','f10','f30','f62'].includes(f.id)).concat(carbsList), i);
+      const bfDairy = pick(dairyList, i);
+      const bfFruit = pick(fruitList, i);
+      meals.desayuno = [];
+      if(bfGrain){ const g=Math.max(40,Math.min(100,Math.round(targetCalories*pct*.40/(bfGrain.cal/100)))); meals.desayuno.push({foodId:bfGrain.id,grams:g}) }
+      if(bfDairy){ const g=Math.max(100,Math.min(250,Math.round(targetCalories*pct*.45/(bfDairy.cal/100)))); meals.desayuno.push({foodId:bfDairy.id,grams:g}) }
+      if(bfFruit) meals.desayuno.push({foodId:bfFruit.id,grams:150});
+    }
 
-    // MEDIA MAÑANA (10%): dairy or fruit + fat optional
-    const alDairy = pick(dairyList, i+2);
-    const alFruit = pick(fruitList, i+2);
-    meals.almuerzo = [];
-    if(alDairy) meals.almuerzo.push({foodId:alDairy.id,grams:125});
-    if(alFruit) meals.almuerzo.push({foodId:alFruit.id,grams:120});
+    if(cfg.slots.includes('almuerzo')){
+      const alDairy = pick(dairyList, i+2);
+      const alFruit = pick(fruitList, i+2);
+      meals.almuerzo = [];
+      if(alDairy) meals.almuerzo.push({foodId:alDairy.id,grams:125});
+      if(alFruit) meals.almuerzo.push({foodId:alFruit.id,grams:120});
+    }
 
-    // COMIDA (35%): protein + carb + 2 veggies + fat
-    const lProt = pick(proteins, i*2);
-    const lCarb = pick(carbsList, i+1);
-    const lVeg1 = pick(veggies, i);
-    const lVeg2 = pick(veggies, i+3);
-    const lFat  = pick(fatList, i);
-    meals.comida = [];
-    if(lProt){ const g=Math.max(100,Math.min(300,Math.round(targetCalories*.35*.45/(lProt.cal/100)))); meals.comida.push({foodId:lProt.id,grams:g}) }
-    if(lCarb){ const g=Math.max(50,Math.min(180,Math.round(targetCalories*.35*.35/(lCarb.cal/100)))); meals.comida.push({foodId:lCarb.id,grams:g}) }
-    if(lVeg1) meals.comida.push({foodId:lVeg1.id,grams:150});
-    if(lVeg2&&lVeg2.id!==lVeg1?.id) meals.comida.push({foodId:lVeg2.id,grams:100});
-    if(lFat) meals.comida.push({foodId:lFat.id,grams:12});
+    if(cfg.slots.includes('comida')){
+      const pct = cfg.pcts.comida;
+      const lProt = pick(proteins, i*2);
+      const lCarb = pick(carbsList, i+1);
+      const lVeg1 = pick(veggies, i);
+      const lVeg2 = pick(veggies, i+3);
+      const lFat  = pick(fatList, i);
+      meals.comida = [];
+      if(lProt){ const g=Math.max(100,Math.min(300,Math.round(targetCalories*pct*.45/(lProt.cal/100)))); meals.comida.push({foodId:lProt.id,grams:g}) }
+      if(lCarb){ const g=Math.max(50,Math.min(180,Math.round(targetCalories*pct*.35/(lCarb.cal/100)))); meals.comida.push({foodId:lCarb.id,grams:g}) }
+      if(lVeg1) meals.comida.push({foodId:lVeg1.id,grams:150});
+      if(lVeg2&&lVeg2.id!==lVeg1?.id) meals.comida.push({foodId:lVeg2.id,grams:100});
+      if(lFat) meals.comida.push({foodId:lFat.id,grams:12});
+    }
 
-    // MERIENDA (10%): fruit + optional dairy
-    const merFruit = pick(fruitList, i+4);
-    const merDairy = pick(dairyList, i+3);
-    meals.merienda = [];
-    if(merFruit) meals.merienda.push({foodId:merFruit.id,grams:150});
-    if(merDairy) meals.merienda.push({foodId:merDairy.id,grams:100});
+    if(cfg.slots.includes('merienda')){
+      const merFruit = pick(fruitList, i+4);
+      const merDairy = pick(dairyList, i+3);
+      meals.merienda = [];
+      if(merFruit) meals.merienda.push({foodId:merFruit.id,grams:150});
+      if(merDairy) meals.merienda.push({foodId:merDairy.id,grams:100});
+    }
 
-    // CENA (23%): different protein + 2 veggies + fat
-    const cenProt = pick(proteins, i*2+1);
-    const cenVeg1 = pick(veggies, i+2);
-    const cenVeg2 = pick(veggies, i+5);
-    const cenFat  = pick(fatList, i+1);
-    meals.cena = [];
-    if(cenProt){ const g=Math.max(100,Math.min(300,Math.round(targetCalories*.23*.55/(cenProt.cal/100)))); meals.cena.push({foodId:cenProt.id,grams:g}) }
-    if(cenVeg1) meals.cena.push({foodId:cenVeg1.id,grams:200});
-    if(cenVeg2&&cenVeg2.id!==cenVeg1?.id) meals.cena.push({foodId:cenVeg2.id,grams:120});
-    if(cenFat) meals.cena.push({foodId:cenFat.id,grams:10});
+    if(cfg.slots.includes('cena')){
+      const pct = cfg.pcts.cena;
+      const cenProt = pick(proteins, i*2+1);
+      const cenVeg1 = pick(veggies, i+2);
+      const cenVeg2 = pick(veggies, i+5);
+      const cenFat  = pick(fatList, i+1);
+      meals.cena = [];
+      if(cenProt){ const g=Math.max(100,Math.min(300,Math.round(targetCalories*pct*.55/(cenProt.cal/100)))); meals.cena.push({foodId:cenProt.id,grams:g}) }
+      if(cenVeg1) meals.cena.push({foodId:cenVeg1.id,grams:200});
+      if(cenVeg2&&cenVeg2.id!==cenVeg1?.id) meals.cena.push({foodId:cenVeg2.id,grams:120});
+      if(cenFat) meals.cena.push({foodId:cenFat.id,grams:10});
+    }
 
     return { dayName, meals };
   });
 
-  return { id:'plan_'+Date.now(), createdAt:new Date().toISOString(), targetCalories, proteinPct, carbsPct, fatPct, dailyBudget, preferredSupermarket, days:planDays };
+  return { id:'plan_'+Date.now(), createdAt:new Date().toISOString(), targetCalories, proteinPct, carbsPct, fatPct, dailyBudget, preferredSupermarket, mealCount:mealCount||4, days:planDays };
 }
 
 /* ═══════════════════════════════════════

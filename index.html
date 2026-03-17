@@ -16,6 +16,7 @@
       --muted:     #6b6b6b;
       --border:    rgba(255,255,255,.06);
       --border-md: rgba(255,255,255,.10);
+      --radius:    12px;
       --radius-xl: 22px;
       --shadow-lg: 0 2px 8px rgba(0,0,0,.7), 0 28px 72px rgba(0,0,0,.5);
       --grad:      linear-gradient(135deg,#ffffff,#888);
@@ -23,6 +24,12 @@
       --carbs:     #e8a838;
       --fat:       #e8687a;
       --kcal:      #52b788;
+      /* Silver/metallic tokens */
+      --silver:        #c8c8c8;
+      --silver-bright: #ebebeb;
+      --silver-dim:    rgba(200,200,200,.12);
+      --glow-sm:       0 0 20px rgba(200,200,200,.12);
+      --glow-md:       0 0 50px rgba(200,200,200,.18);
     }
     *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
     html { scroll-behavior:smooth }
@@ -33,7 +40,14 @@
     a { text-decoration:none; color:inherit }
     button { font-family:inherit; cursor:pointer; border:none }
 
-    /* NAV */
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .6s ease, transform .6s ease }
+    .reveal.visible { opacity:1; transform:translateY(0) }
+    .reveal-d1 { transition-delay:.1s } .reveal-d2 { transition-delay:.2s }
+    .reveal-d3 { transition-delay:.3s } .reveal-d4 { transition-delay:.4s }
+    .reveal-d5 { transition-delay:.5s }
+
+    /* ── NAV ── */
     .nav {
       position:sticky; top:0; z-index:100;
       background:rgba(8,8,8,.88); backdrop-filter:blur(16px);
@@ -56,11 +70,19 @@
     .nav-login:hover { color:var(--text) }
     .btn {
       display:inline-flex; align-items:center; justify-content:center;
-      border-radius:10px; font-weight:600; transition:all .15s;
+      border-radius:10px; font-weight:600; transition:all .2s;
       cursor:pointer; font-family:inherit; border:none;
     }
-    .btn-primary { background:var(--text); color:var(--bg); padding:10px 20px; font-size:.84rem }
-    .btn-primary:hover { opacity:.85 }
+    .btn-primary {
+      background:var(--text); color:var(--bg); padding:10px 20px; font-size:.84rem;
+      position:relative; overflow:hidden;
+    }
+    .btn-primary::after {
+      content:''; position:absolute; top:-50%; left:-75%; width:50%; height:200%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+      animation:shimmer 4s ease-in-out infinite;
+    }
+    .btn-primary:hover { opacity:.88; box-shadow:var(--glow-sm) }
     .btn-ghost {
       background:transparent; color:var(--muted);
       border:1px solid var(--border-md); padding:10px 20px; font-size:.84rem;
@@ -74,26 +96,61 @@
     }
     .hamburger:hover { color:var(--text) }
 
-    /* HERO */
-    .hero {
+    /* ── SHIMMER ── */
+    @keyframes shimmer { 0%{left:-75%} 55%{left:125%} 100%{left:125%} }
+
+    /* ── HERO ── */
+    #hero {
+      min-height:100vh; display:flex; align-items:center;
+      position:relative; overflow:hidden; padding-top:0;
+    }
+    /* Background paths layer */
+    .hero-bg-paths {
+      position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0;
+    }
+    .hero-bg-paths svg {
+      position:absolute; inset:0; width:100%; height:100%;
+      color:rgba(220,220,220,1);
+    }
+    /* Silver radial overlay */
+    .hero-bg {
+      position:absolute; inset:0; z-index:1; pointer-events:none;
+      background:radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,200,200,.06) 0%, transparent 70%);
+    }
+    .hero-content { position:relative; z-index:2; width:100% }
+    .hero-grid {
       max-width:1100px; margin:0 auto; padding:80px 24px 64px;
       display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;
     }
+
+    /* Hero badge with silver shimmer */
     .hero-badge {
       display:inline-flex; align-items:center; gap:8px;
-      background:var(--surface); border:1px solid var(--border-md);
+      background:rgba(200,200,200,.08); border:1px solid rgba(200,200,200,.22);
       border-radius:20px; padding:6px 14px;
-      font-size:.74rem; color:var(--muted); margin-bottom:24px;
+      font-size:.74rem; color:var(--silver); margin-bottom:24px;
+      position:relative; overflow:hidden;
     }
-    .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--kcal); flex-shrink:0 }
+    .hero-badge::after {
+      content:''; position:absolute; top:-50%; left:-75%; width:50%; height:200%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+      animation:shimmer 3s ease-in-out infinite;
+    }
+    .hero-badge-dot {
+      width:7px; height:7px; border-radius:50%; background:var(--kcal); flex-shrink:0;
+      box-shadow:0 0 8px var(--kcal);
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
     .hero-h1 {
       font-size:clamp(2.2rem, 5vw, 3.4rem); font-weight:800;
       letter-spacing:-.04em; line-height:1.1; margin-bottom:20px;
     }
     .hero-h1 em {
       font-style:normal;
-      background:var(--grad); -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent; background-clip:text;
+      background:linear-gradient(135deg,#ffffff 0%,var(--silver) 50%,#999 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
     .hero-sub { font-size:1rem; color:var(--muted); line-height:1.7; margin-bottom:32px }
     .hero-ctas { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px }
@@ -101,17 +158,17 @@
     .hero-trust span { font-size:.76rem; color:var(--muted) }
     .hero-trust span::before { content:'✓ '; color:var(--kcal) }
 
-    /* Hero mockup */
+    /* Hero mockup with silver glow */
     .hero-mockup {
-      background:var(--surface); border:1px solid var(--border-md);
+      background:var(--surface); border:1px solid rgba(200,200,200,.12);
       border-radius:var(--radius-xl); padding:22px;
-      box-shadow:var(--shadow-lg); position:relative; overflow:hidden;
+      box-shadow:var(--shadow-lg), 0 0 60px rgba(200,200,200,.05);
+      position:relative; overflow:hidden;
     }
-    .hero-mockup::before {
-      content:''; position:absolute; top:-60px; right:-60px;
-      width:220px; height:220px; border-radius:50%;
-      background:radial-gradient(circle, rgba(77,157,224,.06) 0%, transparent 70%);
-      pointer-events:none;
+    .hero-glow {
+      position:absolute; width:280px; height:280px;
+      background:radial-gradient(circle, rgba(200,200,200,.18) 0%, transparent 70%);
+      top:-80px; right:-80px; pointer-events:none; border-radius:50%;
     }
     .mockup-header {
       display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;
@@ -122,12 +179,8 @@
       color:var(--kcal); border:1px solid rgba(82,183,136,.2);
       padding:3px 10px; border-radius:20px; font-weight:600;
     }
-    .mockup-macros {
-      display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px;
-    }
-    .mockup-macro {
-      background:var(--surface2); border-radius:12px; padding:11px 8px; text-align:center;
-    }
+    .mockup-macros { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px }
+    .mockup-macro { background:var(--surface2); border-radius:12px; padding:11px 8px; text-align:center }
     .mockup-macro-val { font-size:1rem; font-weight:700; letter-spacing:-.03em }
     .mockup-macro-label { font-size:.59rem; color:var(--muted); margin-top:2px }
     .mockup-macro-bar { height:3px; border-radius:2px; margin-top:8px; background:var(--surface3); overflow:hidden }
@@ -142,15 +195,14 @@
     .mockup-check.pending { border-color:rgba(255,255,255,.15) }
     .mockup-meal-icon {
       width:30px; height:30px; border-radius:8px; background:var(--surface3);
-      display:flex; align-items:center; justify-content:center;
-      font-size:.85rem; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0;
     }
     .mockup-meal-info { flex:1; min-width:0 }
     .mockup-meal-name { font-size:.74rem; font-weight:600 }
     .mockup-meal-foods { font-size:.65rem; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
     .mockup-meal-kcal { font-size:.7rem; color:var(--muted); flex-shrink:0 }
 
-    /* SUPERMARKETS */
+    /* ── SUPERMARKETS ── */
     .supermarkets {
       border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:26px 24px;
     }
@@ -163,23 +215,29 @@
     .supermarket-badge {
       background:var(--surface); border:1px solid var(--border-md);
       border-radius:8px; padding:7px 16px; font-size:.78rem; font-weight:600;
+      transition:border-color .2s, box-shadow .2s;
     }
+    .supermarket-badge:hover { border-color:rgba(200,200,200,.25); box-shadow:var(--glow-sm) }
 
-    /* HOW IT WORKS */
-    .how { max-width:1100px; margin:0 auto; padding:80px 24px }
+    /* ── SECTIONS ── */
     .section-eyebrow {
       font-size:.74rem; font-weight:700; letter-spacing:.1em;
-      text-transform:uppercase; color:var(--muted); margin-bottom:12px;
+      text-transform:uppercase; color:var(--silver); margin-bottom:12px;
     }
     .section-title {
       font-size:clamp(1.6rem, 3.5vw, 2.4rem); font-weight:800;
       letter-spacing:-.04em; line-height:1.2; margin-bottom:48px;
     }
+
+    /* ── HOW IT WORKS ── */
+    .how { max-width:1100px; margin:0 auto; padding:80px 24px }
     .how-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px }
     .how-step {
       background:var(--surface); border:1px solid var(--border);
       border-radius:var(--radius-xl); padding:28px;
+      transition:border-color .25s, box-shadow .25s;
     }
+    .how-step:hover { border-color:rgba(200,200,200,.18); box-shadow:var(--glow-sm) }
     .how-num {
       width:34px; height:34px; border-radius:50%;
       background:var(--surface3); border:1px solid var(--border-md);
@@ -190,14 +248,20 @@
     .how-title { font-size:.96rem; font-weight:700; margin-bottom:8px }
     .how-desc { font-size:.82rem; color:var(--muted); line-height:1.65 }
 
-    /* FEATURES */
+    /* ── FEATURES ── */
     .features { max-width:1100px; margin:0 auto; padding:0 24px 80px }
     .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px }
     .feature-card {
       background:var(--surface); border:1px solid var(--border);
-      border-radius:var(--radius-xl); padding:28px; transition:border-color .2s;
+      border-radius:var(--radius-xl); padding:28px;
+      transition:border-color .25s, box-shadow .25s, transform .25s;
+      position:relative; overflow:hidden;
     }
-    .feature-card:hover { border-color:var(--border-md) }
+    .feature-card:hover {
+      border-color:rgba(200,200,200,.2);
+      box-shadow:var(--glow-sm), 0 20px 60px rgba(0,0,0,.4);
+      transform:translateY(-4px);
+    }
     .feature-icon {
       width:44px; height:44px; border-radius:14px; background:var(--surface2);
       display:flex; align-items:center; justify-content:center;
@@ -206,7 +270,7 @@
     .feature-title { font-size:.96rem; font-weight:700; margin-bottom:8px }
     .feature-desc { font-size:.82rem; color:var(--muted); line-height:1.65 }
 
-    /* PREVIEW */
+    /* ── PREVIEW ── */
     .preview {
       background:var(--surface); border-top:1px solid var(--border);
       border-bottom:1px solid var(--border); padding:80px 24px; overflow:hidden;
@@ -216,8 +280,9 @@
       display:grid; grid-template-columns:1fr 1.4fr; gap:64px; align-items:center;
     }
     .preview-app {
-      background:var(--bg); border:1px solid var(--border-md);
-      border-radius:var(--radius-xl); overflow:hidden; box-shadow:var(--shadow-lg);
+      background:var(--bg); border:1px solid rgba(200,200,200,.1);
+      border-radius:var(--radius-xl); overflow:hidden;
+      box-shadow:var(--shadow-lg), 0 0 60px rgba(200,200,200,.04);
     }
     .preview-app-bar {
       background:var(--surface); border-bottom:1px solid var(--border);
@@ -229,29 +294,29 @@
     .preview-week { display:grid; grid-template-columns:repeat(7,1fr); gap:5px }
     .preview-day { text-align:center }
     .preview-day-name { font-size:.58rem; color:var(--muted); margin-bottom:5px; font-weight:600 }
-    .preview-day-col {
-      background:var(--surface2); border-radius:9px; padding:7px 5px;
-      display:flex; flex-direction:column; gap:4px;
-    }
-    .preview-meal-pill {
-      border-radius:5px; padding:5px 0; text-align:center;
-      font-size:.55rem; font-weight:600;
-    }
+    .preview-day-col { background:var(--surface2); border-radius:9px; padding:7px 5px; display:flex; flex-direction:column; gap:4px }
+    .preview-meal-pill { border-radius:5px; padding:5px 0; text-align:center; font-size:.55rem; font-weight:600 }
     .preview-day-total { font-size:.58rem; color:var(--muted); text-align:center; margin-top:5px }
 
-    /* PRICING */
+    /* ── PRICING ── */
     .pricing { max-width:1100px; margin:0 auto; padding:80px 24px }
     .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px }
     .pricing-card {
       background:var(--surface); border:1px solid var(--border-md);
       border-radius:var(--radius-xl); padding:28px; position:relative;
+      transition:border-color .25s, box-shadow .25s, transform .25s;
     }
-    .pricing-card.popular { border-color:var(--text); box-shadow:0 0 0 1px var(--text) }
+    .pricing-card:hover { transform:translateY(-4px) }
+    .pricing-card.popular {
+      border-color:rgba(200,200,200,.4);
+      box-shadow:0 0 0 1px rgba(200,200,200,.2), var(--glow-md);
+    }
     .popular-badge {
       position:absolute; top:-10px; left:50%; transform:translateX(-50%);
-      background:var(--text); color:var(--bg);
-      font-size:.62rem; font-weight:700; padding:3px 14px;
+      background:linear-gradient(135deg,var(--silver-bright),var(--silver));
+      color:var(--bg); font-size:.62rem; font-weight:700; padding:3px 14px;
       border-radius:20px; letter-spacing:.04em; white-space:nowrap;
+      box-shadow:0 2px 12px rgba(200,200,200,.3);
     }
     .pricing-plan { font-size:.74rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px }
     .pricing-price { font-size:2.4rem; font-weight:300; letter-spacing:-.04em; line-height:1; margin-bottom:4px }
@@ -265,24 +330,60 @@
     .pricing-features li.off::before { content:'—'; color:var(--muted) }
     .btn-plan {
       width:100%; padding:12px; border-radius:10px; font-weight:700;
-      font-size:.86rem; cursor:pointer; font-family:inherit; transition:opacity .15s;
+      font-size:.86rem; cursor:pointer; font-family:inherit; transition:all .2s;
       display:block; text-align:center;
     }
     .btn-plan-outline { background:transparent; border:1px solid var(--border-md); color:var(--text) }
-    .btn-plan-outline:hover { border-color:rgba(255,255,255,.3) }
-    .btn-plan-solid { background:var(--text); color:var(--bg); border:none }
-    .btn-plan-solid:hover { opacity:.85 }
+    .btn-plan-outline:hover { border-color:rgba(255,255,255,.3); box-shadow:var(--glow-sm) }
+    .btn-plan-solid {
+      background:linear-gradient(135deg,var(--silver-bright),var(--silver));
+      color:var(--bg); border:none;
+      box-shadow:0 4px 20px rgba(200,200,200,.2);
+    }
+    .btn-plan-solid:hover { opacity:.9; box-shadow:0 6px 28px rgba(200,200,200,.3) }
 
-    /* CTA FINAL */
-    .cta-final { text-align:center; padding:80px 24px 100px }
+    /* ── CTA FINAL ── */
+    .cta-final { text-align:center; padding:80px 24px 100px; position:relative; overflow:hidden }
+    .cta-final::before {
+      content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+      width:600px; height:300px;
+      background:radial-gradient(ellipse at 50% 0%, rgba(200,200,200,.08) 0%, transparent 70%);
+      pointer-events:none;
+    }
     .cta-h2 {
       font-size:clamp(1.8rem, 4vw, 2.8rem); font-weight:800;
-      letter-spacing:-.04em; line-height:1.2; margin-bottom:16px;
+      letter-spacing:-.04em; line-height:1.2; margin-bottom:16px; position:relative;
     }
-    .cta-sub { font-size:.95rem; color:var(--muted); margin-bottom:32px }
+    .cta-sub { font-size:.95rem; color:var(--muted); margin-bottom:32px; position:relative }
     .cta-note { font-size:.76rem; color:var(--muted); margin-top:14px }
 
-    /* FOOTER */
+    /* ── BORDER TRAIL ── */
+    .border-trail { position:relative; overflow:hidden }
+    .bt-mask {
+      pointer-events:none; position:absolute; inset:-1px;
+      border-radius:inherit; border:1px solid transparent;
+      -webkit-mask-clip:padding-box, border-box;
+      mask-clip:padding-box, border-box;
+      -webkit-mask-composite:destination-out;
+      mask-composite:intersect;
+      -webkit-mask-image:linear-gradient(#000,#000), linear-gradient(#000,#000);
+      mask-image:linear-gradient(transparent,transparent), linear-gradient(#000,#000);
+      overflow:hidden; z-index:10;
+    }
+    .bt-dot {
+      position:absolute; width:80px; height:80px; border-radius:50%;
+      background:rgba(220,220,220,.85);
+      box-shadow:0 0 20px 10px rgba(220,220,220,.4), 0 0 60px 20px rgba(220,220,220,.15);
+      offset-path:rect(0 100% 100% 0 round var(--radius));
+      offset-rotate:0deg;
+      animation:bt-travel 5s linear infinite;
+    }
+    .bt-dot.slow  { animation-duration:8s }
+    .bt-dot.fast  { animation-duration:3.5s }
+    @keyframes bt-travel { 0%{offset-distance:0%} 100%{offset-distance:100%} }
+    @supports not (offset-path: rect(0 0 0 0)) { .bt-dot { display:none } }
+
+    /* ── FOOTER ── */
     footer { border-top:1px solid var(--border); padding:40px 24px }
     .footer-inner {
       max-width:1100px; margin:0 auto;
@@ -300,7 +401,7 @@
     .footer-links a:hover { color:var(--text) }
     .footer-copy { font-size:.74rem; color:var(--muted) }
 
-    /* MOBILE */
+    /* ── MOBILE ── */
     @media(max-width:900px){
       .nav-links { display:none }
       .nav-links.open {
@@ -309,21 +410,16 @@
         background:var(--surface); border-bottom:1px solid var(--border);
         padding:8px 16px 16px; z-index:99;
       }
-      .nav-links.open > a {
-        padding:13px 0; font-size:.9rem;
-        border-bottom:1px solid var(--border);
-      }
+      .nav-links.open > a { padding:13px 0; font-size:.9rem; border-bottom:1px solid var(--border) }
+      .nav-links.open > a:last-child { border-bottom:none }
       .nav-right { display:none }
       .nav-links.open .nav-right {
-        display:flex; flex-direction:column; width:100%;
-        gap:8px; padding-top:12px; margin-left:0;
+        display:flex; flex-direction:column; width:100%; gap:8px; padding-top:12px; margin-left:0;
       }
       .nav-links.open .nav-login { padding:0; font-size:.9rem; color:var(--muted) }
-      .nav-links.open .btn-primary {
-        display:block; width:100%; text-align:center; padding:12px;
-      }
+      .nav-links.open .btn-primary { display:block; width:100%; text-align:center; padding:12px }
       .hamburger { display:block }
-      .hero { grid-template-columns:1fr; padding:48px 24px 40px; gap:36px }
+      .hero-grid { grid-template-columns:1fr; padding:48px 24px 40px; gap:36px }
       .hero-mockup { max-width:440px; margin:0 auto; width:100% }
       .how-grid { grid-template-columns:1fr }
       .features-grid { grid-template-columns:1fr 1fr }
@@ -355,93 +451,93 @@
         <a href="login.html?m=register" class="btn btn-primary">Empezar gratis</a>
       </div>
     </div>
-    <button class="hamburger" id="hamburger" aria-label="Menú">☰</button>
+    <button class="hamburger" id="hamburger">☰</button>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-text">
-    <div class="hero-badge">
-      <div class="hero-badge-dot"></div>
-      Datos reales · Mercadona · Lidl · Carrefour · Alcampo
-    </div>
-    <h1 class="hero-h1">Tu <em>nutricionista</em><br/>personal, con IA</h1>
-    <p class="hero-sub">Planes de alimentación personalizados creados con productos reales de tus supermercados. Adaptados a tus macros, presupuesto y alergias — sin complicaciones.</p>
-    <div class="hero-ctas">
-      <a href="login.html?m=register" class="btn btn-primary btn-lg">Crear mi plan gratis</a>
-      <a href="#como-funciona" class="btn btn-ghost btn-lg">Ver cómo funciona</a>
-    </div>
-    <div class="hero-trust">
-      <span>Sin tarjeta de crédito</span>
-      <span>Plan gratis para siempre</span>
-      <span>Listo en 2 minutos</span>
-    </div>
+<section id="hero">
+  <!-- Background animated paths (port of background-paths.tsx) -->
+  <div class="hero-bg-paths" aria-hidden="true">
+    <svg id="bp-pos" viewBox="0 0 696 316" fill="none" preserveAspectRatio="xMidYMid slice"></svg>
+    <svg id="bp-neg" viewBox="0 0 696 316" fill="none" preserveAspectRatio="xMidYMid slice"></svg>
   </div>
+  <div class="hero-bg"></div>
 
-  <div class="hero-mockup">
-    <div class="mockup-header">
-      <span class="mockup-title">Hoy · Martes</span>
-      <span class="mockup-badge">Plan activo · Día 3</span>
-    </div>
-    <div class="mockup-macros">
-      <div class="mockup-macro">
-        <div class="mockup-macro-val" style="color:var(--kcal)">1840</div>
-        <div class="mockup-macro-label">kcal</div>
-        <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:78%;background:var(--kcal)"></div></div>
-      </div>
-      <div class="mockup-macro">
-        <div class="mockup-macro-val" style="color:var(--protein)">142g</div>
-        <div class="mockup-macro-label">proteína</div>
-        <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:85%;background:var(--protein)"></div></div>
-      </div>
-      <div class="mockup-macro">
-        <div class="mockup-macro-val" style="color:var(--carbs)">195g</div>
-        <div class="mockup-macro-label">carbos</div>
-        <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:70%;background:var(--carbs)"></div></div>
-      </div>
-      <div class="mockup-macro">
-        <div class="mockup-macro-val" style="color:var(--fat)">58g</div>
-        <div class="mockup-macro-label">grasas</div>
-        <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:88%;background:var(--fat)"></div></div>
-      </div>
-    </div>
-    <div class="mockup-meals">
-      <div class="mockup-meal">
-        <div class="mockup-check done"></div>
-        <div class="mockup-meal-icon">☕</div>
-        <div class="mockup-meal-info">
-          <div class="mockup-meal-name">Desayuno</div>
-          <div class="mockup-meal-foods">Avena · Yogur natural · Plátano</div>
+  <div class="hero-content">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <div class="hero-badge-dot"></div>
+          Datos reales · Mercadona · Lidl · Carrefour · Alcampo
         </div>
-        <div class="mockup-meal-kcal">412 kcal</div>
-      </div>
-      <div class="mockup-meal">
-        <div class="mockup-check done"></div>
-        <div class="mockup-meal-icon">🥗</div>
-        <div class="mockup-meal-info">
-          <div class="mockup-meal-name">Comida</div>
-          <div class="mockup-meal-foods">Pechuga pollo · Arroz · Brócoli</div>
+        <h1 class="hero-h1">Tu <em>nutricionista</em><br/>personal, con IA</h1>
+        <p class="hero-sub">Planes de alimentación personalizados creados con productos reales de tus supermercados. Adaptados a tus macros, presupuesto y alergias — sin complicaciones.</p>
+        <div class="hero-ctas">
+          <a href="login.html?m=register" class="btn btn-primary btn-lg">Crear mi plan gratis</a>
+          <a href="#como-funciona" class="btn btn-ghost btn-lg">Ver cómo funciona</a>
         </div>
-        <div class="mockup-meal-kcal">648 kcal</div>
-      </div>
-      <div class="mockup-meal">
-        <div class="mockup-check pending"></div>
-        <div class="mockup-meal-icon">🍎</div>
-        <div class="mockup-meal-info">
-          <div class="mockup-meal-name">Merienda</div>
-          <div class="mockup-meal-foods">Queso fresco · Manzana</div>
+        <div class="hero-trust">
+          <span>Sin tarjeta de crédito</span>
+          <span>Plan gratis para siempre</span>
+          <span>Listo en 2 minutos</span>
         </div>
-        <div class="mockup-meal-kcal">238 kcal</div>
       </div>
-      <div class="mockup-meal" style="background:transparent;border:1px solid var(--border);border-radius:12px">
-        <div class="mockup-check pending"></div>
-        <div class="mockup-meal-icon">🍽</div>
-        <div class="mockup-meal-info">
-          <div class="mockup-meal-name">Cena</div>
-          <div class="mockup-meal-foods">Salmón · Espinacas · Patata</div>
+
+      <div class="hero-mockup reveal reveal-d2">
+        <div class="hero-glow"></div>
+        <div class="mockup-header">
+          <span class="mockup-title">Hoy · Martes</span>
+          <span class="mockup-badge">Plan activo · Día 3</span>
         </div>
-        <div class="mockup-meal-kcal">542 kcal</div>
+        <div class="mockup-macros">
+          <div class="mockup-macro">
+            <div class="mockup-macro-val" style="color:var(--kcal)">1840</div>
+            <div class="mockup-macro-label">kcal</div>
+            <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:78%;background:var(--kcal)"></div></div>
+          </div>
+          <div class="mockup-macro">
+            <div class="mockup-macro-val" style="color:var(--protein)">142g</div>
+            <div class="mockup-macro-label">proteína</div>
+            <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:85%;background:var(--protein)"></div></div>
+          </div>
+          <div class="mockup-macro">
+            <div class="mockup-macro-val" style="color:var(--carbs)">195g</div>
+            <div class="mockup-macro-label">carbos</div>
+            <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:70%;background:var(--carbs)"></div></div>
+          </div>
+          <div class="mockup-macro">
+            <div class="mockup-macro-val" style="color:var(--fat)">58g</div>
+            <div class="mockup-macro-label">grasas</div>
+            <div class="mockup-macro-bar"><div class="mockup-macro-fill" style="width:88%;background:var(--fat)"></div></div>
+          </div>
+        </div>
+        <div class="mockup-meals">
+          <div class="mockup-meal">
+            <div class="mockup-check done"></div>
+            <div class="mockup-meal-icon">☕</div>
+            <div class="mockup-meal-info"><div class="mockup-meal-name">Desayuno</div><div class="mockup-meal-foods">Avena · Yogur natural · Plátano</div></div>
+            <div class="mockup-meal-kcal">412 kcal</div>
+          </div>
+          <div class="mockup-meal">
+            <div class="mockup-check done"></div>
+            <div class="mockup-meal-icon">🥗</div>
+            <div class="mockup-meal-info"><div class="mockup-meal-name">Comida</div><div class="mockup-meal-foods">Pechuga pollo · Arroz · Brócoli</div></div>
+            <div class="mockup-meal-kcal">648 kcal</div>
+          </div>
+          <div class="mockup-meal">
+            <div class="mockup-check pending"></div>
+            <div class="mockup-meal-icon">🍎</div>
+            <div class="mockup-meal-info"><div class="mockup-meal-name">Merienda</div><div class="mockup-meal-foods">Queso fresco · Manzana</div></div>
+            <div class="mockup-meal-kcal">238 kcal</div>
+          </div>
+          <div class="mockup-meal" style="background:transparent;border:1px solid var(--border);border-radius:12px">
+            <div class="mockup-check pending"></div>
+            <div class="mockup-meal-icon">🍽</div>
+            <div class="mockup-meal-info"><div class="mockup-meal-name">Cena</div><div class="mockup-meal-foods">Salmón · Espinacas · Patata</div></div>
+            <div class="mockup-meal-kcal">542 kcal</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -462,22 +558,22 @@
 
 <!-- HOW IT WORKS -->
 <section class="how" id="como-funciona">
-  <div class="section-eyebrow">Proceso</div>
-  <h2 class="section-title">Listo en tres pasos</h2>
+  <div class="section-eyebrow reveal">Proceso</div>
+  <h2 class="section-title reveal">Listo en tres pasos</h2>
   <div class="how-grid">
-    <div class="how-step">
+    <div class="how-step reveal reveal-d1">
       <div class="how-num">1</div>
       <div class="how-icon">🎯</div>
       <div class="how-title">Cuéntanos tus objetivos</div>
-      <div class="how-desc">Dinos si quieres perder grasa, ganar músculo o mantenerte. Configura tus calorías, distribución de macros y cualquier alergia o restricción.</div>
+      <div class="how-desc">Dinos si quieres perder grasa, ganar músculo o mantenerte. Configura tus calorías, macros y cualquier alergia o restricción.</div>
     </div>
-    <div class="how-step">
+    <div class="how-step reveal reveal-d2">
       <div class="how-num">2</div>
       <div class="how-icon">🛒</div>
       <div class="how-title">Elige tu supermercado</div>
-      <div class="how-desc">Selecciona dónde haces la compra habitualmente y cuánto quieres gastar al día. La IA filtra los mejores productos dentro de tu presupuesto.</div>
+      <div class="how-desc">Selecciona dónde haces la compra y cuánto quieres gastar al día. La IA filtra los mejores productos dentro de tu presupuesto.</div>
     </div>
-    <div class="how-step">
+    <div class="how-step reveal reveal-d3">
       <div class="how-num">3</div>
       <div class="how-icon">📋</div>
       <div class="how-title">Recibe tu plan semanal</div>
@@ -488,38 +584,38 @@
 
 <!-- FEATURES -->
 <section class="features" id="caracteristicas">
-  <div class="section-eyebrow">Características</div>
-  <h2 class="section-title">Todo lo que necesitas,<br/>nada que no necesitas</h2>
+  <div class="section-eyebrow reveal">Características</div>
+  <h2 class="section-title reveal">Todo lo que necesitas,<br/>nada que no necesitas</h2>
   <div class="features-grid">
-    <div class="feature-card">
+    <div class="feature-card reveal reveal-d1">
       <div class="feature-icon">🗄️</div>
       <div class="feature-title">Base de datos real</div>
       <div class="feature-desc">Miles de productos de Mercadona, Lidl, Carrefour y Alcampo con información nutricional y precios reales actualizados.</div>
     </div>
-    <div class="feature-card">
+    <div class="feature-card reveal reveal-d2">
       <div class="feature-icon">⚖️</div>
       <div class="feature-title">Control exacto de macros</div>
-      <div class="feature-desc">Proteínas, carbohidratos, grasas y calorías calculados al gramo. Tu plan se ajusta automáticamente a tus objetivos diarios.</div>
+      <div class="feature-desc">Proteínas, carbohidratos, grasas y calorías calculados al gramo. Tu TDEE se calcula con tu peso, altura, edad y actividad.</div>
     </div>
-    <div class="feature-card">
+    <div class="feature-card reveal reveal-d3">
       <div class="feature-icon">💶</div>
       <div class="feature-title">Optimizado para tu bolsillo</div>
       <div class="feature-desc">Define tu presupuesto diario y la IA selecciona las combinaciones más económicas sin sacrificar calidad nutricional.</div>
     </div>
-    <div class="feature-card">
+    <div class="feature-card reveal reveal-d1">
       <div class="feature-icon">🚫</div>
       <div class="feature-title">Sin alergias ni restricciones</div>
       <div class="feature-desc">Indica tus alergias o intolerancias (gluten, lactosa, frutos secos…) y nunca volverán a aparecer en tu plan.</div>
     </div>
-    <div class="feature-card">
+    <div class="feature-card reveal reveal-d2">
       <div class="feature-icon">🛍️</div>
       <div class="feature-title">Lista de la compra automática</div>
       <div class="feature-desc">Genera la lista de tu semana agrupada por supermercado, con cantidades exactas y el coste total estimado.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔄</div>
-      <div class="feature-title">Planes que evolucionan</div>
-      <div class="feature-desc">¿Cansado de algo? Regenera un día concreto o todo el plan con un clic. Variedad garantizada cada semana.</div>
+    <div class="feature-card reveal reveal-d3">
+      <div class="feature-icon">🍽</div>
+      <div class="feature-title">Tú decides cuántas comidas</div>
+      <div class="feature-desc">¿2 comidas o 5? Elige el número de ingestas diarias que mejor se adapte a tu estilo de vida y el plan se adapta a ellas.</div>
     </div>
   </div>
 </section>
@@ -527,7 +623,7 @@
 <!-- PREVIEW -->
 <section class="preview">
   <div class="preview-inner">
-    <div>
+    <div class="reveal">
       <div class="section-eyebrow">Vista real</div>
       <h2 class="section-title" style="margin-bottom:16px">Tu semana,<br/>de un vistazo</h2>
       <p style="font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:28px">
@@ -535,7 +631,7 @@
       </p>
       <a href="login.html?m=register" class="btn btn-primary">Generar mi primer plan</a>
     </div>
-    <div class="preview-app">
+    <div class="preview-app reveal reveal-d2">
       <div class="preview-app-bar">
         <div class="preview-dot" style="background:#ff5f56"></div>
         <div class="preview-dot" style="background:#ffbd2e"></div>
@@ -553,16 +649,8 @@
           <div class="preview-day"><div class="preview-day-name">DOM</div><div class="preview-day-col"><div class="preview-meal-pill" style="background:rgba(82,183,136,.15);color:var(--kcal)">☕ Des</div><div class="preview-meal-pill" style="background:rgba(77,157,224,.12);color:var(--protein)">🥗 Com</div><div class="preview-meal-pill" style="background:rgba(232,168,56,.12);color:var(--carbs)">🍎 Mer</div><div class="preview-meal-pill" style="background:rgba(232,104,122,.12);color:var(--fat)">🍽 Cen</div></div><div class="preview-day-total">1850 kcal</div></div>
         </div>
         <div style="margin-top:12px;padding:12px;background:var(--surface2);border-radius:10px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-          <div style="font-size:.71rem">
-            <span style="color:var(--muted)">Media: </span>
-            <strong>1836 kcal · </strong>
-            <span style="color:var(--protein)">143g pro · </span>
-            <span style="color:var(--carbs)">198g carbs · </span>
-            <span style="color:var(--fat)">59g grasas</span>
-          </div>
-          <div style="font-size:.71rem;color:var(--muted);margin-left:auto">
-            💰 ~<strong style="color:var(--text)">4,80 €/día</strong>
-          </div>
+          <div style="font-size:.71rem"><span style="color:var(--muted)">Media: </span><strong>1836 kcal · </strong><span style="color:var(--protein)">143g pro · </span><span style="color:var(--carbs)">198g carbs · </span><span style="color:var(--fat)">59g grasas</span></div>
+          <div style="font-size:.71rem;color:var(--muted);margin-left:auto">💰 ~<strong style="color:var(--text)">4,80 €/día</strong></div>
         </div>
       </div>
     </div>
@@ -571,20 +659,20 @@
 
 <!-- PRICING -->
 <section class="pricing" id="precios">
-  <div style="text-align:center;margin-bottom:48px">
+  <div style="text-align:center;margin-bottom:48px" class="reveal">
     <div class="section-eyebrow" style="text-align:center">Precios</div>
     <h2 class="section-title" style="margin-bottom:8px">Simple y transparente</h2>
     <p style="font-size:.9rem;color:var(--muted)">Sin sorpresas. Empieza gratis, crece cuando lo necesites.</p>
   </div>
   <div class="pricing-grid">
-    <div class="pricing-card">
+    <div class="pricing-card reveal reveal-d1">
       <div class="pricing-plan">Gratis</div>
       <div class="pricing-price">0<sup>€</sup></div>
       <div class="pricing-period">para siempre</div>
       <div class="pricing-divider"></div>
       <ul class="pricing-features">
-        <li>1 plan generado al mes</li>
-        <li>Supermercado Mercadona</li>
+        <li>1 plan simultáneo</li>
+        <li>2 supermercados (Mercadona + Lidl)</li>
         <li>Control de macros básico</li>
         <li>Lista de la compra</li>
         <li class="off">Todos los supermercados</li>
@@ -593,7 +681,7 @@
       </ul>
       <a href="login.html?m=register" class="btn-plan btn-plan-outline">Empezar gratis</a>
     </div>
-    <div class="pricing-card popular">
+    <div class="pricing-card popular reveal reveal-d2">
       <div class="popular-badge">MÁS POPULAR</div>
       <div class="pricing-plan">Pro</div>
       <div class="pricing-price">9<sup>€</sup></div>
@@ -610,7 +698,7 @@
       </ul>
       <a href="login.html?m=register" class="btn-plan btn-plan-solid">Empezar con Pro</a>
     </div>
-    <div class="pricing-card">
+    <div class="pricing-card reveal reveal-d3">
       <div class="pricing-plan">Premium</div>
       <div class="pricing-price">19<sup>€</sup></div>
       <div class="pricing-period">usuario / mes</div>
@@ -630,7 +718,7 @@
 </section>
 
 <!-- CTA FINAL -->
-<section class="cta-final">
+<section class="cta-final reveal">
   <h2 class="cta-h2">Empieza hoy,<br/>come mejor mañana</h2>
   <p class="cta-sub">Únete y genera tu primer plan personalizado en menos de 2 minutos.</p>
   <a href="login.html?m=register" class="btn btn-primary btn-lg">Crear mi plan gratis</a>
@@ -656,9 +744,93 @@
 </footer>
 
 <script>
+/* ── NAV MOBILE ── */
 document.getElementById('hamburger').addEventListener('click', function(){
   document.getElementById('nav-links').classList.toggle('open');
 });
+
+/* ── SCROLL REVEAL ── */
+(function(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible') });
+  }, { threshold:.1 });
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+})();
+
+/* ── BACKGROUND PATHS (port de background-paths.tsx) ── */
+(function buildBackgroundPaths(){
+  const NS = 'http://www.w3.org/2000/svg';
+  const styleEl = document.createElement('style');
+  styleEl.id = 'bp-keyframes';
+  document.head.appendChild(styleEl);
+  const sheet = styleEl.sheet;
+
+  function buildFloatingPaths(svgEl, position, prefix){
+    for(let i=0; i<36; i++){
+      const p = position;
+      const d = `M-${380-i*5*p} -${189+i*6}`+
+                `C-${380-i*5*p} -${189+i*6}`+
+                ` -${312-i*5*p} ${216-i*6}`+
+                ` ${152-i*5*p} ${343-i*6}`+
+                `C${616-i*5*p} ${470-i*6}`+
+                ` ${684-i*5*p} ${875-i*6}`+
+                ` ${684-i*5*p} ${875-i*6}`;
+
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('stroke', 'currentColor');
+      path.setAttribute('stroke-width', (0.5+i*0.03).toFixed(3));
+      path.setAttribute('stroke-opacity', Math.min(0.08+i*0.025, 0.7).toFixed(3));
+      path.setAttribute('fill', 'none');
+      svgEl.appendChild(path);
+
+      const L = path.getTotalLength();
+      if(!L) continue;
+
+      const dur   = (20+Math.random()*10).toFixed(2);
+      const delay = (-(Math.random()*25)).toFixed(2);
+      const name  = `bp-${prefix}-${i}`;
+      const Lf    = L.toFixed(2);
+
+      sheet.insertRule(`
+        @keyframes ${name} {
+          0%   { stroke-dashoffset: 0; }
+          100% { stroke-dashoffset: -${(L*2).toFixed(2)}; }
+        }
+      `, sheet.cssRules.length);
+
+      path.style.strokeDasharray = `${Lf} ${Lf}`;
+      path.style.animation = `${name} ${dur}s ${delay}s linear infinite`;
+    }
+  }
+
+  const svgPos = document.getElementById('bp-pos');
+  const svgNeg = document.getElementById('bp-neg');
+  if(!svgPos||!svgNeg) return;
+  buildFloatingPaths(svgPos,  1, 'pos');
+  buildFloatingPaths(svgNeg, -1, 'neg');
+})();
+
+/* ── BORDER TRAIL (port de border-trail.tsx) ── */
+(function initBorderTrails(){
+  const cards = document.querySelectorAll('.feature-card, .pricing-card, .how-step');
+  cards.forEach((card, idx)=>{
+    card.classList.add('border-trail');
+    const mask = document.createElement('div');
+    mask.className = 'bt-mask';
+    const dot = document.createElement('div');
+    if(card.classList.contains('pricing-card') && card.classList.contains('popular')){
+      dot.className = 'bt-dot fast';
+    } else if(card.classList.contains('feature-card')){
+      dot.className = 'bt-dot slow';
+    } else {
+      dot.className = 'bt-dot';
+    }
+    dot.style.animationDelay = `${-(idx*1.3).toFixed(1)}s`;
+    mask.appendChild(dot);
+    card.appendChild(mask);
+  });
+})();
 </script>
 </body>
 </html>
