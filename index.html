@@ -16,7 +16,7 @@
   <meta name="twitter:title"      content="FlowDesk — Gestión de equipos remotos" />
   <meta name="twitter:description"content="Centraliza tareas, comunicación y métricas en un solo lugar." />
   <meta name="twitter:image"      content="https://maurosbz.github.io/FlowDesk/og-image.png" />
-  <meta name="theme-color"        content="#6C63FF" />
+  <meta name="theme-color"        content="#e0e0e0" />
 
   <!-- ── PWA ── -->
   <link rel="manifest" href="manifest.json" />
@@ -28,70 +28,76 @@
 
   <style>
     /* ══════════════════════════════════
-       DESIGN TOKENS — DARK (default)
+       DESIGN TOKENS — DARK (default) — GRAYSCALE
     ══════════════════════════════════ */
     :root {
-      --primary:    #6C63FF;
-      --secondary:  #FF6584;
-      --dark:       #1A1A2E;
-      --surface:    #16213E;
-      --surface2:   #1e2a4a;
-      --light:      #F8F9FF;
-      --text:       #E0E0E0;
-      --muted:      #8892B0;
-      --white:      #FFFFFF;
-      --border:     rgba(255,255,255,.07);
-      --grad: linear-gradient(135deg, var(--primary), var(--secondary));
+      --primary:    #f0f0f0;
+      --secondary:  #9ca3af;
+      --dark:       #080808;
+      --surface:    #111111;
+      --surface2:   #1a1a1a;
+      --light:      #f5f5f5;
+      --text:       #e5e5e5;
+      --muted:      #737373;
+      --white:      #ffffff;
+      --border:     rgba(255,255,255,.09);
+      --grad: linear-gradient(135deg, #ffffff 0%, #888888 100%);
       --radius: 12px;
-      --shadow: 0 8px 32px rgba(108,99,255,.18);
-      --nav-bg: rgba(26,26,46,.88);
+      --shadow: 0 8px 40px rgba(0,0,0,.6);
+      --nav-bg: rgba(8,8,8,.88);
       --card-bg: var(--surface);
-      --section-alt-bg: var(--light);
-      --section-alt-text: #1A1A2E;
-      --section-alt-muted: #555;
+      --section-alt-bg: var(--surface2);
+      --section-alt-text: var(--text);
+      --section-alt-muted: var(--muted);
       --input-bg: rgba(255,255,255,.05);
       --input-border: rgba(255,255,255,.1);
     }
 
     /* ── LIGHT MODE ── */
     [data-theme="light"] {
-      --dark:      #F0F2FF;
-      --surface:   #FFFFFF;
-      --surface2:  #EEF0FF;
-      --text:      #2A2A3E;
-      --muted:     #6B7280;
-      --border:    rgba(0,0,0,.08);
-      --nav-bg:    rgba(255,255,255,.92);
-      --card-bg:   #FFFFFF;
-      --section-alt-bg: #1A1A2E;
-      --section-alt-text: #E0E0E0;
-      --section-alt-muted: #8892B0;
+      --primary:    #111111;
+      --secondary:  #555555;
+      --dark:       #f8f8f8;
+      --surface:    #ffffff;
+      --surface2:   #f0f0f0;
+      --text:       #111111;
+      --muted:      #666666;
+      --white:      #000000;
+      --border:     rgba(0,0,0,.08);
+      --grad: linear-gradient(135deg, #111111 0%, #666666 100%);
+      --nav-bg:     rgba(248,248,248,.92);
+      --card-bg:    #ffffff;
+      --section-alt-bg:   #f0f0f0;
+      --section-alt-text: #111111;
+      --section-alt-muted:#666666;
       --input-bg:    rgba(0,0,0,.04);
       --input-border: rgba(0,0,0,.12);
+      --shadow: 0 8px 40px rgba(0,0,0,.1);
     }
-    [data-theme="light"] .logo-item { color: rgba(0,0,0,.18); }
-    [data-theme="light"] .logo-item:hover { color: rgba(0,0,0,.45); }
-    [data-theme="light"] .mockup { box-shadow: 0 24px 80px rgba(0,0,0,.12); }
+    [data-theme="light"] .logo-item { color: rgba(0,0,0,.2); }
+    [data-theme="light"] .logo-item:hover { color: var(--primary); letter-spacing: .12em; }
+    [data-theme="light"] .mockup { box-shadow: 0 24px 80px rgba(0,0,0,.1); }
     [data-theme="light"] .btn-outline { border-color: rgba(0,0,0,.15); color: var(--text); }
     [data-theme="light"] .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-    [data-theme="light"] .hero-eyebrow { color: var(--primary); }
+    [data-theme="light"] .hero-eyebrow { color: #444; }
     [data-theme="light"] #logos { border-color: rgba(0,0,0,.07); }
     [data-theme="light"] .plan-divider { background: rgba(0,0,0,.06); }
     [data-theme="light"] .plan-features li { color: var(--text); }
-    [data-theme="light"] .price-card { background: #F8F9FF; border-color: rgba(0,0,0,.07); }
-    [data-theme="light"] #pricing { background: #EEF0FF; }
-    [data-theme="light"] #faq { background: #EEF0FF; }
+    [data-theme="light"] .price-card { background: #f8f8f8; border-color: rgba(0,0,0,.08); }
+    [data-theme="light"] #pricing { background: #f0f0f0; }
+    [data-theme="light"] #faq { background: #f0f0f0; }
     [data-theme="light"] .faq-q { color: var(--text); }
-    [data-theme="light"] .feature-card { background: #FFFFFF; border-color: rgba(0,0,0,.07); }
-    [data-theme="light"] .testi-card { background: #FFFFFF; border-color: rgba(0,0,0,.07); }
-    [data-theme="light"] .cta-box { background: #FFFFFF; }
-    [data-theme="light"] footer { background: #1A1A2E; }
+    [data-theme="light"] .feature-card { background: #ffffff; border-color: rgba(0,0,0,.07); }
+    [data-theme="light"] .testi-card { background: #ffffff; border-color: rgba(0,0,0,.07); }
+    [data-theme="light"] .cta-box { background: #ffffff; }
+    [data-theme="light"] footer { background: #111111; }
     [data-theme="light"] .email-input { color: var(--text); }
     [data-theme="light"] .hero-stats { border-color: rgba(0,0,0,.08); }
     [data-theme="light"] .mock-card { background: rgba(0,0,0,.03); border-color: rgba(0,0,0,.06); }
     [data-theme="light"] .mock-bar-track { background: rgba(0,0,0,.06); }
     [data-theme="light"] .mock-task { border-color: rgba(0,0,0,.05); color: #555; }
     [data-theme="light"] .chat-panel { background: #fff; border-color: rgba(0,0,0,.1); }
+    [data-theme="light"] .bt-dot { background: #222; box-shadow: 0 0 20px 10px rgba(0,0,0,.3), 0 0 60px 20px rgba(0,0,0,.15); }
 
     /* ══════════════════════════════════
        RESET & BASE
@@ -145,9 +151,9 @@
     [data-theme="light"] .section-light .muted { color: var(--section-alt-muted); }
     .badge {
       display: inline-block;
-      background: rgba(108,99,255,.15);
+      background: rgba(200,200,200,.15);
       color: var(--primary);
-      border: 1px solid rgba(108,99,255,.3);
+      border: 1px solid rgba(255,255,255,.15);
       border-radius: 50px;
       padding: 6px 16px;
       font-size: .78rem;
@@ -195,9 +201,9 @@
     .btn-primary {
       background: var(--grad);
       color: #fff;
-      box-shadow: 0 4px 20px rgba(108,99,255,.4);
+      box-shadow: 0 4px 20px rgba(255,255,255,.15);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(108,99,255,.5); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,255,255,.2); }
     .btn-outline {
       background: transparent;
       border: 1.5px solid rgba(255,255,255,.2);
@@ -258,7 +264,7 @@
       transition: background .2s, border-color .2s;
       color: var(--text);
     }
-    .theme-toggle:hover { border-color: var(--primary); background: rgba(108,99,255,.1); }
+    .theme-toggle:hover { border-color: var(--primary); background: rgba(200,200,200,.1); }
 
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
     .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; display: block; }
@@ -289,27 +295,21 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      /* dark: paths blancos sutiles, como dark:text-white del componente original */
       color: rgba(255,255,255,1);
     }
     [data-theme="light"] .hero-bg-paths svg {
-      /* light: paths oscuros, como text-slate-950 del componente original */
-      color: rgba(15,23,42,1);
+      color: rgba(0,0,0,1);
     }
 
     /* El gradiente pasa a ser un overlay encima de los paths */
     .hero-bg {
       position: absolute; inset: 0;
       z-index: 1;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,.18) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,101,132,.10) 0%, transparent 60%);
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,255,255,.04) 0%, transparent 70%);
       pointer-events: none;
     }
     [data-theme="light"] .hero-bg {
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,.07) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,101,132,.04) 0%, transparent 60%);
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,0,0,.03) 0%, transparent 70%);
     }
     /* El contenido del hero queda sobre paths y gradiente */
     .hero-grid { position: relative; z-index: 2; }
@@ -324,13 +324,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(108,99,255,.1);
-      border: 1px solid rgba(108,99,255,.25);
+      background: rgba(200,200,200,.1);
+      border: 1px solid rgba(200,200,200,.25);
       border-radius: 50px;
       padding: 6px 14px;
       font-size: .8rem;
       font-weight: 600;
-      color: #a89fff;
+      color: #c0c0c0;
       margin-bottom: 24px;
     }
     .hero-eyebrow::before {
@@ -379,7 +379,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 24px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(108,99,255,.1);
+      box-shadow: 0 24px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08);
       transition: background .3s;
     }
     .mockup-bar {
@@ -393,13 +393,13 @@
     [data-theme="light"] .mockup-bar { background: rgba(0,0,0,.03); }
     .dot { width: 10px; height: 10px; border-radius: 50%; }
     .dot-r { background: #FF5F57; }
-    .dot-y { background: #FEBC2E; }
-    .dot-g { background: #28C840; }
+    .dot-y { background: #888888; }
+    .dot-g { background: #aaaaaa; }
     .mockup-body { padding: 20px; }
     .mock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .mock-title { font-size: .85rem; font-weight: 700; color: var(--text); }
     .mock-badge {
-      background: rgba(108,99,255,.2); color: var(--primary);
+      background: rgba(200,200,200,.2); color: var(--primary);
       border-radius: 4px; padding: 3px 10px; font-size: .72rem; font-weight: 600;
     }
     .mock-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
@@ -434,7 +434,7 @@
     .hero-glow {
       position: absolute;
       width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(108,99,255,.3) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(200,200,200,.3) 0%, transparent 70%);
       top: -60px; right: -60px;
       pointer-events: none; border-radius: 50%;
     }
@@ -483,13 +483,13 @@
       display: flex; align-items: center; justify-content: center;
       transition: background .2s, color .2s;
     }
-    .modal-close:hover { background: rgba(255,101,132,.2); color: #FF6584; }
+    .modal-close:hover { background: rgba(160,160,160,.2); color: #aaaaaa; }
     /* Animated demo inside modal */
     .demo-screen {
       padding: 24px;
       background: var(--dark);
     }
-    [data-theme="light"] .demo-screen { background: #F0F2FF; }
+    [data-theme="light"] .demo-screen { background: #f0f0f0; }
     .demo-tabs {
       display: flex; gap: 4px;
       background: rgba(255,255,255,.05);
@@ -555,7 +555,7 @@
     [data-theme="light"] .metric-card { background: #fff; }
     .metric-label { font-size: .72rem; color: var(--muted); margin-bottom: 6px; }
     .metric-val { font-size: 1.5rem; font-weight: 800; color: var(--text); }
-    .metric-trend { font-size: .72rem; color: #28C840; margin-top: 2px; }
+    .metric-trend { font-size: .72rem; color: #aaaaaa; margin-top: 2px; }
     /* demo chart bars */
     .mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 48px; margin-top: 8px; }
     .mini-bar {
@@ -605,11 +605,11 @@
     }
     .feature-card:hover {
       transform: translateY(-6px); box-shadow: var(--shadow);
-      border-color: rgba(108,99,255,.3);
+      border-color: rgba(200,200,200,.3);
     }
     .feature-icon {
       width: 52px; height: 52px; border-radius: 12px;
-      background: rgba(108,99,255,.12);
+      background: rgba(200,200,200,.12);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.4rem; margin-bottom: 20px;
     }
@@ -639,7 +639,7 @@
       display: inline-flex; align-items: center; justify-content: center;
       margin: 0 auto 20px;
       position: relative; z-index: 1;
-      box-shadow: 0 4px 20px rgba(108,99,255,.4);
+      box-shadow: 0 4px 20px rgba(255,255,255,.15);
     }
     .step-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
     .step-desc  { font-size: .88rem; color: var(--muted); }
@@ -660,8 +660,8 @@
     }
     .price-card:hover { transform: translateY(-4px); }
     .price-card.featured {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px var(--primary), var(--shadow);
+      border-color: rgba(255,255,255,.5);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.3), var(--shadow);
       transform: scale(1.04);
     }
     .price-card.featured:hover { transform: scale(1.04) translateY(-4px); }
@@ -703,19 +703,19 @@
       border-bottom: 1px solid var(--border);
     }
     .compare-table th.featured-col {
-      color: var(--primary);
-      background: rgba(108,99,255,.06);
+      color: var(--text);
+      background: rgba(255,255,255,.03);
     }
     .compare-table td {
       padding: 12px 20px;
       border-bottom: 1px solid var(--border);
       color: var(--text);
     }
-    .compare-table td.featured-col { background: rgba(108,99,255,.04); }
+    .compare-table td.featured-col { background: rgba(255,255,255,.03); }
     .compare-table tr:last-child td { border-bottom: none; }
     .compare-table tr:hover td { background: rgba(255,255,255,.02); }
     [data-theme="light"] .compare-table tr:hover td { background: rgba(0,0,0,.015); }
-    .check-yes { color: var(--primary); font-size: 1rem; }
+    .check-yes { color: var(--text); font-size: 1rem; }
     .check-no  { color: var(--muted);   font-size: 1rem; opacity: .4; }
     .compare-title {
       text-align: center; font-size: 1.1rem; font-weight: 700;
@@ -735,7 +735,7 @@
       transition: transform .3s, background .3s;
     }
     .testi-card:hover { transform: translateY(-4px); }
-    .stars { color: #FEBC2E; font-size: .95rem; margin-bottom: 14px; }
+    .stars { color: #c0c0c0; font-size: .95rem; margin-bottom: 14px; }
     .testi-quote { font-size: .92rem; color: var(--text); line-height: 1.65; margin-bottom: 20px; font-style: italic; }
     .testi-author { display: flex; align-items: center; gap: 12px; }
     .avatar {
@@ -763,7 +763,7 @@
     .faq-q:hover { color: var(--primary); }
     .faq-icon {
       width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(108,99,255,.15);
+      background: rgba(200,200,200,.15);
       display: inline-flex; align-items: center; justify-content: center;
       font-size: .75rem; flex-shrink: 0;
       transition: transform .3s, background .2s;
@@ -781,14 +781,14 @@
     #cta-final { background: var(--dark); text-align: center; transition: background .3s; }
     .cta-box {
       background: var(--surface);
-      border: 1px solid rgba(108,99,255,.2);
+      border: 1px solid rgba(200,200,200,.2);
       border-radius: 20px; padding: 72px 48px;
       position: relative; overflow: hidden;
       transition: background .3s;
     }
     .cta-box::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,99,255,.12) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,200,200,.12) 0%, transparent 70%);
       pointer-events: none;
     }
     .cta-box h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 16px; color: var(--text); }
@@ -809,7 +809,7 @@
        FOOTER
     ══════════════════════════════════ */
     footer {
-      background: #0f0f1e;
+      background: #0f0f0f;
       padding: 64px 0 32px;
       border-top: 1px solid var(--border);
     }
@@ -834,7 +834,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: .85rem; transition: background .2s; color: #8892B0;
     }
-    .social-link:hover { background: rgba(108,99,255,.3); color: #fff; }
+    .social-link:hover { background: rgba(200,200,200,.3); color: #fff; }
 
     /* ══════════════════════════════════
        CHAT WIDGET
@@ -848,14 +848,14 @@
       background: var(--grad);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; border: none; font-size: 1.3rem;
-      box-shadow: 0 4px 20px rgba(108,99,255,.5);
+      box-shadow: 0 4px 20px rgba(255,255,255,.15);
       transition: transform .2s, box-shadow .2s;
     }
-    .chat-btn:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(108,99,255,.6); }
+    .chat-btn:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(255,255,255,.2); }
     .chat-badge {
       position: absolute; top: -3px; right: -3px;
       width: 16px; height: 16px; border-radius: 50%;
-      background: #FF6584; color: #fff;
+      background: #aaaaaa; color: #fff;
       font-size: .6rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
       border: 2px solid var(--dark);
@@ -889,7 +889,7 @@
     .chat-close-btn:hover { color: #fff; }
     .chat-messages { padding: 16px; min-height: 120px; }
     .chat-msg {
-      background: rgba(108,99,255,.12);
+      background: rgba(200,200,200,.12);
       border-radius: 0 10px 10px 10px;
       padding: 10px 12px; font-size: .82rem;
       color: var(--text); margin-bottom: 10px;
@@ -919,8 +919,59 @@
     .chat-send:hover { background: var(--secondary); }
 
     /* ══════════════════════════════════
-       RESPONSIVE
+       BORDER TRAIL
+       Port de border-trail.tsx
+       Usa CSS offset-path (Motion Path API)
     ══════════════════════════════════ */
+    .border-trail { position: relative; overflow: visible; }
+
+    /* La capa que enmascara el dot al borde de la tarjeta */
+    .bt-mask {
+      pointer-events: none;
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 1px solid transparent;
+      /* Mask: solo muestra el anillo del borde */
+      -webkit-mask-clip: padding-box, border-box;
+      mask-clip: padding-box, border-box;
+      -webkit-mask-composite: destination-out;
+      mask-composite: intersect;
+      -webkit-mask-image: linear-gradient(#000,#000), linear-gradient(#000,#000);
+      mask-image: linear-gradient(transparent,transparent), linear-gradient(#000,#000);
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    /* El dot que viaja por el borde */
+    .bt-dot {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.9);
+      box-shadow:
+        0 0 20px 10px rgba(255,255,255,.5),
+        0 0 60px 20px rgba(255,255,255,.2);
+      /* offset-path traza el rectángulo del borde de la tarjeta */
+      offset-path: rect(0 100% 100% 0 round var(--radius));
+      offset-rotate: 0deg;
+      animation: bt-travel 5s linear infinite;
+    }
+    .bt-dot.slow  { animation-duration: 8s; }
+    .bt-dot.fast  { animation-duration: 3.5s; }
+
+    @keyframes bt-travel {
+      0%   { offset-distance: 0%; }
+      100% { offset-distance: 100%; }
+    }
+
+    /* Fallback: browsers sin offset-path no ven el dot (la tarjeta sigue luciendo bien) */
+    @supports not (offset-path: rect(0 0 0 0)) {
+      .bt-dot { display: none; }
+    }
+
+    /* ══ RESPONSIVE ══════════════════════════════════════ */
     /* Marco: nav-open como clase CSS para que respete variables de tema */
     @media (max-width: 900px) {
       .nav-links { display: none; }
@@ -1048,19 +1099,19 @@
           </div>
           <div class="mock-tasks">
             <div class="mock-task">
-              <div class="mock-task-dot" style="background:#6C63FF"></div>
+              <div class="mock-task-dot" style="background:#c0c0c0"></div>
               Rediseñar onboarding
-              <span><span class="mock-tag" style="background:rgba(108,99,255,.2);color:#6C63FF">UI</span></span>
+              <span><span class="mock-tag" style="background:rgba(255,255,255,.12);color:#e0e0e0">UI</span></span>
             </div>
             <div class="mock-task">
-              <div class="mock-task-dot" style="background:#28C840"></div>
+              <div class="mock-task-dot" style="background:#888"></div>
               API de notificaciones
-              <span><span class="mock-tag" style="background:rgba(40,200,64,.15);color:#28C840">Done</span></span>
+              <span><span class="mock-tag" style="background:rgba(150,150,150,.15);color:#aaa">Done</span></span>
             </div>
             <div class="mock-task">
-              <div class="mock-task-dot" style="background:#FF6584"></div>
+              <div class="mock-task-dot" style="background:#666"></div>
               Tests de integración
-              <span><span class="mock-tag" style="background:rgba(255,101,132,.15);color:#FF6584">Block</span></span>
+              <span><span class="mock-tag" style="background:rgba(100,100,100,.12);color:#888">Block</span></span>
             </div>
           </div>
         </div>
@@ -1088,25 +1139,25 @@
           <div>
             <div class="demo-col-title">Por hacer <span class="demo-col-count">4</span></div>
             <div class="demo-card">
-              <span class="demo-card-tag" style="background:rgba(108,99,255,.15);color:#6C63FF">Feature</span>
+              <span class="demo-card-tag" style="background:rgba(200,200,200,.15);color:#e0e0e0">Feature</span>
               <div>Sistema de notificaciones push</div>
               <div class="demo-card-user"><div class="mini-avatar">AM</div> Ana M.</div>
             </div>
             <div class="demo-card">
-              <span class="demo-card-tag" style="background:rgba(254,188,46,.15);color:#FEBC2E">Design</span>
+              <span class="demo-card-tag" style="background:rgba(136,136,136,.15);color:#c0c0c0">Design</span>
               <div>Nuevos iconos de navegación</div>
               <div class="demo-card-user"><div class="mini-avatar">LR</div> Laura R.</div>
             </div>
           </div>
           <div>
             <div class="demo-col-title">En progreso <span class="demo-col-count">3</span></div>
-            <div class="demo-card" style="border-left: 3px solid #6C63FF;">
-              <span class="demo-card-tag" style="background:rgba(40,200,64,.12);color:#28C840">API</span>
+            <div class="demo-card" style="border-left: 3px solid #e0e0e0;">
+              <span class="demo-card-tag" style="background:rgba(150,150,150,.12);color:#aaaaaa">API</span>
               <div>Integración con Slack v2</div>
               <div class="demo-card-user"><div class="mini-avatar">DK</div> David K.</div>
             </div>
-            <div class="demo-card" style="border-left: 3px solid #6C63FF;">
-              <span class="demo-card-tag" style="background:rgba(108,99,255,.15);color:#6C63FF">Feature</span>
+            <div class="demo-card" style="border-left: 3px solid #e0e0e0;">
+              <span class="demo-card-tag" style="background:rgba(200,200,200,.15);color:#e0e0e0">Feature</span>
               <div>Rediseño del onboarding</div>
               <div class="demo-card-user"><div class="mini-avatar">AM</div> Ana M.</div>
             </div>
@@ -1114,12 +1165,12 @@
           <div>
             <div class="demo-col-title">Completado <span class="demo-col-count">8</span></div>
             <div class="demo-card" style="opacity:.7">
-              <span class="demo-card-tag" style="background:rgba(40,200,64,.12);color:#28C840">Done ✓</span>
+              <span class="demo-card-tag" style="background:rgba(150,150,150,.12);color:#aaaaaa">Done ✓</span>
               <div>Migración a base de datos v2</div>
               <div class="demo-card-user"><div class="mini-avatar">DK</div> David K.</div>
             </div>
             <div class="demo-card" style="opacity:.7">
-              <span class="demo-card-tag" style="background:rgba(40,200,64,.12);color:#28C840">Done ✓</span>
+              <span class="demo-card-tag" style="background:rgba(150,150,150,.12);color:#aaaaaa">Done ✓</span>
               <div>Dashboard de métricas</div>
               <div class="demo-card-user"><div class="mini-avatar">LR</div> Laura R.</div>
             </div>
@@ -1148,18 +1199,18 @@
             <div class="metric-val">8 / 24</div>
             <div class="metric-trend">+3 hoy</div>
             <div class="mini-chart">
-              <div class="mini-bar" style="height:30%;background:#FF6584;animation-delay:.1s"></div>
-              <div class="mini-bar" style="height:50%;background:#FF6584;animation-delay:.2s"></div>
-              <div class="mini-bar" style="height:45%;background:#FF6584;animation-delay:.3s"></div>
-              <div class="mini-bar" style="height:65%;background:#FF6584;animation-delay:.4s"></div>
-              <div class="mini-bar" style="height:55%;background:#FF6584;animation-delay:.5s"></div>
-              <div class="mini-bar" style="height:75%;background:#FF6584;animation-delay:.6s;opacity:1"></div>
+              <div class="mini-bar" style="height:30%;background:#aaaaaa;animation-delay:.1s"></div>
+              <div class="mini-bar" style="height:50%;background:#aaaaaa;animation-delay:.2s"></div>
+              <div class="mini-bar" style="height:45%;background:#aaaaaa;animation-delay:.3s"></div>
+              <div class="mini-bar" style="height:65%;background:#aaaaaa;animation-delay:.4s"></div>
+              <div class="mini-bar" style="height:55%;background:#aaaaaa;animation-delay:.5s"></div>
+              <div class="mini-bar" style="height:75%;background:#aaaaaa;animation-delay:.6s;opacity:1"></div>
             </div>
           </div>
           <div class="metric-card">
             <div class="metric-label">Tiempo de ciclo promedio</div>
             <div class="metric-val">2.4 días</div>
-            <div class="metric-trend" style="color:#FF6584">-0.8 días (mejor)</div>
+            <div class="metric-trend" style="color:#aaaaaa">-0.8 días (mejor)</div>
           </div>
           <div class="metric-card">
             <div class="metric-label">NPS del equipo</div>
@@ -1210,7 +1261,7 @@
 <section id="how" class="section section-light">
   <div class="container">
     <div class="text-center reveal">
-      <div class="badge" style="background:rgba(108,99,255,.08);color:var(--primary)">Proceso</div>
+      <div class="badge" style="background:rgba(200,200,200,.08);color:var(--primary)">Proceso</div>
       <h2 class="section-title">Listo en 3 minutos</h2>
       <p class="section-sub muted">Sin onboarding complejo. Sin tarjeta de crédito. Sin excusas.</p>
     </div>
@@ -1688,36 +1739,27 @@
     e.preventDefault();
     const btn = e.target.querySelector('button');
     btn.textContent = '¡Listo! Revisa tu email';
-    btn.style.background = 'linear-gradient(135deg,#28C840,#20a835)';
-    btn.style.boxShadow  = '0 4px 20px rgba(40,200,64,.4)';
+    btn.style.background = 'linear-gradient(135deg,#888,#555)';
+    btn.style.boxShadow  = '0 4px 20px rgba(255,255,255,.15)';
     btn.disabled = true;
   }
 
   /* ══════════════════════════════════
      12. BACKGROUND PATHS
-     Port fiel de background-paths.tsx
-     Fix: CSS @keyframes inyectados dinámicamente
-     (Web Animations API no interpola stroke-dasharray
-     como strings en todos los browsers)
+     Port de background-paths.tsx
+     Fix flickering: solo stroke-dashoffset,
+     sin animación de stroke-dasharray.
   ══════════════════════════════════ */
   (function buildBackgroundPaths() {
     const NS = 'http://www.w3.org/2000/svg';
-
-    // Hoja de estilo dedicada para los @keyframes generados
     const styleEl = document.createElement('style');
     styleEl.id = 'bp-keyframes';
     document.head.appendChild(styleEl);
     const sheet = styleEl.sheet;
 
-    /**
-     * Replica exacta de FloatingPaths({ position }) del componente React.
-     * prefix: 'pos' | 'neg' — para nombres únicos de @keyframes
-     */
     function buildFloatingPaths(svgEl, position, prefix) {
       for (let i = 0; i < 36; i++) {
         const p = position;
-
-        // ── Misma fórmula de path que el componente original ──
         const d = `M-${380 - i*5*p} -${189 + i*6}` +
                   `C-${380 - i*5*p} -${189 + i*6}` +
                   ` -${312 - i*5*p} ${216 - i*6}` +
@@ -1726,59 +1768,36 @@
                   ` ${684 - i*5*p} ${875 - i*6}` +
                   ` ${684 - i*5*p} ${875 - i*6}`;
 
-        const strokeWidth   = 0.5 + i * 0.03;
-        const strokeOpacity = Math.min(0.1 + i * 0.03, 1); // strokeOpacity del original
-
         const path = document.createElementNS(NS, 'path');
         path.setAttribute('d', d);
         path.setAttribute('stroke', 'currentColor');
-        path.setAttribute('stroke-width', strokeWidth.toFixed(3));
-        path.setAttribute('stroke-opacity', strokeOpacity.toFixed(3));
+        path.setAttribute('stroke-width', (0.5 + i * 0.03).toFixed(3));
+        path.setAttribute('stroke-opacity', Math.min(0.1 + i * 0.03, 1).toFixed(3));
         path.setAttribute('fill', 'none');
         svgEl.appendChild(path);
 
-        // getTotalLength() es puramente geométrico — no necesita layout
         const L = path.getTotalLength();
         if (!L) continue;
 
-        const dur   = (20 + Math.random() * 10).toFixed(2); // 20-30s como el original
-        const delay = (-(Math.random() * 30)).toFixed(2);    // stagger: ya llevan N segundos corriendo
+        const dur   = (20 + Math.random() * 10).toFixed(2);
+        const delay = (-(Math.random() * 25)).toFixed(2);
         const name  = `bp-${prefix}-${i}`;
 
         /*
-          Traducción de framer-motion → CSS @keyframes:
-
-          Original React:
-            initial={{ pathLength: 0.3, opacity: 0.6 }}
-            animate={{
-              pathLength: 1,
-              opacity: [0.3, 0.6, 0.3],
-              pathOffset: [0, 1, 0],
-            }}
-
-          SVG equivalente:
-            pathLength  → stroke-dasharray: "visibleSeg gap"
-                           donde visibleSeg = pathLength * L
-            pathOffset  → stroke-dashoffset: -(pathOffset * L)
-            opacity     → opacity en el keyframe
-
-          Keyframes:
-            0%  : dasharray=0.3L/0.7L,  dashoffset=0,   opacity=0.6
-            50% : dasharray=L/~0,       dashoffset=-L,  opacity=0.3
-            100%: dasharray=L/~0,       dashoffset=0,   opacity=0.6
+          Fix: solo animamos stroke-dashoffset (no dasharray).
+          stroke-dasharray: L → dash=L, gap=L (la mitad del path visible).
+          dashoffset 0 → -2L hace que el dash viaje por el path completo = scrolling effect.
+          Sin animación de dasharray → sin flickering ni saltos visuales.
         */
-        const da03  = (0.3 * L).toFixed(2);
-        const da07  = (0.7 * L).toFixed(2);
-        const daFull = L.toFixed(2);
-
+        const Lf = L.toFixed(2);
         sheet.insertRule(`
           @keyframes ${name} {
-            0%   { stroke-dasharray: ${da03} ${da07}; stroke-dashoffset: 0;       opacity: 0.6; }
-            50%  { stroke-dasharray: ${daFull} 1;     stroke-dashoffset: -${daFull}; opacity: 0.3; }
-            100% { stroke-dasharray: ${daFull} 1;     stroke-dashoffset: 0;       opacity: 0.6; }
+            0%   { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -${(L * 2).toFixed(2)}; }
           }
         `, sheet.cssRules.length);
 
+        path.style.strokeDasharray = `${Lf} ${Lf}`;
         path.style.animation = `${name} ${dur}s ${delay}s linear infinite`;
       }
     }
@@ -1787,8 +1806,36 @@
     const svgNeg = document.getElementById('bp-neg');
     if (!svgPos || !svgNeg) return;
 
-    buildFloatingPaths(svgPos,  1, 'pos');  // FloatingPaths position={1}
-    buildFloatingPaths(svgNeg, -1, 'neg');  // FloatingPaths position={-1}
+    buildFloatingPaths(svgPos,  1, 'pos');
+    buildFloatingPaths(svgNeg, -1, 'neg');
+  })();
+
+  /* ══════════════════════════════════
+     BorderTrail — port de border-trail.tsx
+     Inyecta .bt-mask + .bt-dot en cada tarjeta
+  ══════════════════════════════════ */
+  (function initBorderTrails() {
+    const cards = document.querySelectorAll('.feature-card, .price-card, .testi-card');
+    cards.forEach((card, idx) => {
+      card.classList.add('border-trail');
+      const mask = document.createElement('div');
+      mask.className = 'bt-mask';
+      const dot = document.createElement('div');
+
+      // Velocidades distintas por tipo de tarjeta
+      if (card.classList.contains('price-card') && card.classList.contains('featured')) {
+        dot.className = 'bt-dot fast';
+      } else if (card.classList.contains('feature-card')) {
+        dot.className = 'bt-dot slow';
+      } else {
+        dot.className = 'bt-dot';
+      }
+
+      // Stagger: cada tarjeta arranca en una fase distinta
+      dot.style.animationDelay = `${-(idx * 1.3).toFixed(1)}s`;
+      mask.appendChild(dot);
+      card.appendChild(mask);
+    });
   })();
 
   /* ══════════════════════════════════
