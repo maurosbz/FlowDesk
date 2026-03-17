@@ -1131,6 +1131,9 @@ const MEAL_ORDER = ['desayuno','almuerzo','comida','merienda','cena'];
 const MEAL_PCT = { desayuno:.22, almuerzo:.10, comida:.35, merienda:.10, cena:.23 };
 const DAYS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
+// Carbs no aptos para desayuno (arroz, pasta, patata, quinoa, boniato…)
+const NON_BREAKFAST_CARBS = new Set(['f07','f08','f11','f28','f29','f31','f45','f46','f61','f63']);
+
 // Configuraciones de comidas por número de ingestas
 const MEAL_CONFIGS = {
   2: { slots:['comida','cena'],              pcts:{ comida:.55, cena:.45 } },
@@ -1888,7 +1891,8 @@ function generatePlan(opts){
 
     if(cfg.slots.includes('desayuno')){
       const pct = cfg.pcts.desayuno;
-      const bfGrain = pick(carbsList.filter(f=>['f09','f10','f30','f62'].includes(f.id)).concat(carbsList), i);
+      const bfGrainPool = carbsList.filter(f=>!NON_BREAKFAST_CARBS.has(f.id));
+      const bfGrain = pick(bfGrainPool.length > 0 ? bfGrainPool : carbsList, i);
       const bfDairy = pick(dairyList, i);
       const bfFruit = pick(fruitList, i);
       meals.desayuno = [];
