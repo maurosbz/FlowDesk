@@ -1985,7 +1985,18 @@ async function startGeneration(){
     plan = await generatePlanWithAI(opts);
   } catch(e) {
     console.warn('AI generation failed, using local fallback:', e);
-    plan = generatePlan(opts);
+    try {
+      plan = generatePlan(opts);
+    } catch(e2) {
+      console.error('Local fallback also failed:', e2);
+    }
+  }
+
+  if(!plan){
+    closeModal('modal-generating');
+    resetSteps();
+    toast('Error generando el plan. Revisa tu perfil e inténtalo de nuevo.');
+    return;
   }
 
   activateStep(3); await sleep(400);
@@ -2232,7 +2243,7 @@ function clearChat(){
 }
 
 function addWelcomeMsg(){
-  const prof = getProfile();
+  const prof = getProfileForAssistant();
   const name = (session.name||'').split(' ')[0] || 'ahí';
   addChatMsg('assistant',
     `Hola, ${name}! Soy tu asistente nutricional de NutrIA.\n\n` +
@@ -2243,28 +2254,23 @@ function addWelcomeMsg(){
   );
 }
 
-function getProfile(){
-  const calories = parseInt(document.getElementById('s-calories')?.value)||2000;
-  const protein  = parseInt(document.getElementById('s-protein')?.value)||30;
-  const carbs    = parseInt(document.getElementById('s-carbs')?.value)||45;
-  const fat      = parseInt(document.getElementById('s-fat')?.value)||25;
-  const budget   = parseInt(document.getElementById('s-budget')?.value)||7;
-  const supermarket = document.getElementById('s-supermarket')?.value||'any';
-  const weight   = parseInt(document.getElementById('s-weight')?.value)||75;
-  const height   = parseInt(document.getElementById('s-height')?.value)||175;
-  const age      = parseInt(document.getElementById('s-age')?.value)||30;
-  const gender   = document.getElementById('s-gender')?.value||'male';
-  const activity = document.getElementById('s-activity')?.value||'1.55';
-  const allergies= [...document.querySelectorAll('.allergy-chip.active')].map(c=>c.dataset.allergy).join(', ')||'ninguna';
+function getProfileForAssistant(){
+  const p = getProfile();
+  const calories = parseInt(document.getElementById('s-calories')?.value)||p.targetCalories||2000;
   const goalMap = { cut_hard:'definición fuerte', cut:'definición', maintain:'mantenimiento', bulk:'volumen', bulk_hard:'superávit fuerte' };
   const goalEl = document.querySelector('.goal-option.active');
   const goalLabel = goalEl ? (goalMap[goalEl.dataset.goal]||'mantenimiento') : 'mantenimiento';
-  const mealCount = document.querySelector('.meal-count-btn.active')?.dataset.meals||4;
-  return { calories, protein, carbs, fat, budget, supermarket, weight, height, age, gender, activity, allergies, goalLabel, mealCount };
+  const allergiesArr = p.allergies||[];
+  const allergiesStr = allergiesArr.length ? allergiesArr.join(', ') : 'ninguna';
+  const weight = parseInt(document.getElementById('s-weight')?.value)||75;
+  const height = parseInt(document.getElementById('s-height')?.value)||175;
+  const age    = parseInt(document.getElementById('s-age')?.value)||30;
+  const gender = document.getElementById('s-gender')?.value||'male';
+  return { ...p, calories, goalLabel, allergies: allergiesStr, weight, height, age, gender };
 }
 
 function buildSystemPrompt(){
-  const p = getProfile();
+  const p = getProfileForAssistant();
   const protG = Math.round(p.calories * p.protein/100 / 4);
   const carbG = Math.round(p.calories * p.carbs/100 / 4);
   const fatG  = Math.round(p.calories * p.fat/100 / 9);
