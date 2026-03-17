@@ -251,22 +251,6 @@
     .nav-links a:hover, .nav-links a.active { color: var(--primary); }
     .nav-cta { display: flex; gap: 12px; align-items: center; }
 
-    /* Theme toggle */
-    .theme-toggle {
-      width: 36px; height: 36px;
-      border-radius: 8px;
-      background: var(--input-bg);
-      border: 1.5px solid var(--border);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      transition: background .2s, border-color .2s;
-      color: var(--text);
-    }
-    .theme-toggle:hover { border-color: var(--primary); background: rgba(200,200,200,.1); }
-
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
     .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; display: block; }
 
@@ -896,6 +880,7 @@
     @media (max-width: 900px) {
       .nav-links { display: none; }
       .nav-cta .btn-outline { display: none; }
+      .nav-cta .btn-primary { display: none; }
       .hamburger { display: flex; }
       .nav-links.nav-open {
         display: flex;
@@ -947,7 +932,6 @@
       <li><a href="#faq">FAQ</a></li>
     </ul>
     <div class="nav-cta">
-      <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">🌙</button>
       <a href="app.html" class="btn btn-outline">Iniciar sesión</a>
       <a href="app.html" class="btn btn-primary">Empezar gratis</a>
     </div>
@@ -1423,18 +1407,7 @@
      1. DARK / LIGHT MODE
   ══════════════════════════════════ */
   const html = document.documentElement;
-  const themeToggle = document.getElementById('theme-toggle');
-  const savedTheme = localStorage.getItem('fd-theme') || 'dark';
-  html.setAttribute('data-theme', savedTheme);
-  themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-
-  themeToggle.addEventListener('click', () => {
-    const current = html.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('fd-theme', next);
-    themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
-  });
+  html.setAttribute('data-theme', 'dark');
 
 
   /* ══════════════════════════════════
