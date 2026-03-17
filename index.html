@@ -889,10 +889,19 @@
         top: 57px; left: 0; right: 0;
         background: var(--nav-bg);
         backdrop-filter: blur(14px);
-        padding: 24px;
+        padding: 24px 24px 28px;
         gap: 20px;
         border-bottom: 1px solid var(--border);
         z-index: 999;
+      }
+      .nav-links.nav-open .nav-mobile-cta {
+        display: block;
+        margin-top: 4px;
+        text-align: center;
+        padding: 12px;
+        border-radius: 10px;
+        background: var(--text); color: var(--dark);
+        font-weight: 700; font-size: .9rem;
       }
       .hero-grid { grid-template-columns: 1fr; }
       .hero-visual { display: none; }
@@ -930,6 +939,7 @@
       <li><a href="#how">Cómo funciona</a></li>
       <li><a href="#pricing">Precios</a></li>
       <li><a href="#faq">FAQ</a></li>
+      <li><a href="app.html" class="nav-mobile-cta" style="display:none">Empezar gratis</a></li>
     </ul>
     <div class="nav-cta">
       <a href="app.html" class="btn btn-outline">Iniciar sesión</a>

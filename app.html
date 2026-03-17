@@ -676,7 +676,25 @@
     }
     @media(max-width:600px) {
       .stats-grid { grid-template-columns:1fr 1fr }
+      .stat-val { font-size:2.1rem }
+      .stat-card { padding:18px 16px 14px }
       .header-search { display:none }
+      /* Kanban tabs on mobile */
+      .board-col-tabs {
+        display:flex; gap:6px; overflow-x:auto; padding-bottom:4px;
+        margin-bottom:14px; -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+      }
+      .board-col-tabs::-webkit-scrollbar { display:none }
+      .col-tab {
+        padding:7px 16px; border-radius:20px; font-size:.78rem; font-weight:600;
+        border:1px solid var(--border); color:var(--muted); white-space:nowrap;
+        cursor:pointer; transition:all .15s; flex-shrink:0;
+      }
+      .col-tab.active { background:var(--surface2); color:var(--text); border-color:var(--border-md) }
+      .board-cols { gap:0 }
+      .kanban-col { display:none; width:100%; min-width:0; max-height:none }
+      .kanban-col.col-mobile-active { display:flex }
     }
   </style>
 </head>
@@ -814,6 +832,7 @@
           <button class="btn btn-primary" onclick="openNewTask()">+ Nueva tarea</button>
         </div>
       </div>
+      <div class="board-col-tabs" id="board-col-tabs"></div>
       <div class="board-cols" id="board-cols"></div>
     </div>
 
@@ -1494,6 +1513,28 @@ function renderBoard(){
       renderBoard();
     });
   });
+
+  // Mobile column tabs (≤600px)
+  const tabsEl = document.getElementById('board-col-tabs');
+  if(window.innerWidth <= 600){
+    tabsEl.innerHTML = COLS.map((col, i) => {
+      const count = filtered.filter(t=>t.status===col.id).length;
+      return `<button class="col-tab ${i===0?'active':''}" data-col="${col.id}">${col.label} · ${count}</button>`;
+    }).join('');
+    // Show first column by default
+    const cols = document.querySelectorAll('.kanban-col');
+    if(cols[0]) cols[0].classList.add('col-mobile-active');
+    tabsEl.querySelectorAll('.col-tab').forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        tabsEl.querySelectorAll('.col-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.kanban-col').forEach(c=>c.classList.remove('col-mobile-active'));
+        if(cols[i]) cols[i].classList.add('col-mobile-active');
+      });
+    });
+  } else {
+    tabsEl.innerHTML = '';
+  }
 }
 
 function renderTaskCard(t){
